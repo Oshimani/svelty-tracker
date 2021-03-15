@@ -2,16 +2,27 @@
 	import { onMount } from "svelte";
 	import { faCoffee } from "@fortawesome/free-solid-svg-icons";
 	import Icon from "svelte-awesome";
-	
-	import { ITracker } from "./ITracker";
 
+	import { tick } from "./store";
 	import Tracker from "./Tracker.svelte";
 
-	let trackers: ITracker[] = [];
+	let trackers: any[] = [];
 	let formName: string;
 
-	function stopTheCount() {
-		trackers.forEach((tracker) => tracker.stop());
+	function stopTheCount(id?: string) {
+		console.log("ID:", id);
+
+		trackers = [
+			...trackers.map((t) => {
+				if (t.id === id) {
+					return { ...t, active: true };
+				}
+				return {
+					...t,
+					active: false,
+				};
+			}),
+		];
 	}
 
 	function handleDelete(deleteDetail: any) {
@@ -22,25 +33,38 @@
 	}
 
 	function handleSubmit() {
-		trackers = [new ITracker(undefined, formName, true), ...trackers];
+		trackers = [{ name: formName, id: formName }, ...trackers];
 		formName = "";
 	}
 
+	function handleNewDuration({ id, duration }) {
+		const i = trackers.findIndex((t) => t.id === id);
+		if (i > -1) {
+			trackers[i].duration = duration;
+		}
+	}
+
+	function backup() {
+		localStorage.setItem(
+			"backup",
+			JSON.stringify({ date: new Date().toISOString(), data: trackers })
+		);
+	}
+
 	function restoreBackup() {
-		const backup = localStorage.getItem("backup");
+		const backup = JSON.parse(localStorage.getItem("backup"));
 		if (backup) {
-			console.log("Found backup", JSON.parse(backup));
-			const parsedTrackers = JSON.parse(backup);
-			trackers = [
-				parsedTrackers.map((t) => {
-					return new ITracker(t.name, t.active, t.duration);
-				}),
-			];
+			console.log("Found backup", backup);
+			const parsedTrackers = backup.data;
+			trackers = parsedTrackers;
 		}
 	}
 
 	onMount(() => {
-		// restoreBackup();
+		setInterval(() => {
+			tick.update((t) => t + 1);
+		}, 1000);
+		restoreBackup();
 	});
 </script>
 
@@ -60,24 +84,24 @@
 	</h1>
 	<ul>
 		{#each trackers as tracker (tracker.id)}
-			<Tracker {tracker} on:delete={(e) => handleDelete(e.detail)} />
+			<Tracker
+				{...tracker}
+				on:delete={(e) => handleDelete(e.detail)}
+				on:startTracking={(e) => stopTheCount(e.detail.id)}
+				on:newDuration={(e) => handleNewDuration(e.detail)}
+			/>
 		{/each}
 	</ul>
 
-	<form on:submit|preventDefault={() => handleSubmit()}>
+	<form class="mt-4" on:submit|preventDefault={() => handleSubmit()}>
 		<input type="text" bind:value={formName} />
 		<button type="submit">Add</button>
 	</form>
 
 	<div>
+		<button class="px-2 py-1" on:click={() => backup()}>Backup</button>
 		<button class="px-2 py-1" on:click={() => restoreBackup()}
 			>Restore</button
 		>
 	</div>
 </main>
-
-<style global lang="postcss">
-	@tailwind base;
-	@tailwind components;
-	@tailwind utilities;
-</style>

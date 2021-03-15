@@ -1,78 +1,91 @@
-<script context="module">
-    let current;
-</script>
-
 <script lang="ts">
     import { createEventDispatcher, onDestroy, onMount } from "svelte";
+    import { fade, fly } from "svelte/transition";
+    import { backIn, backInOut } from "svelte/easing";
+
     import Icon from "svelte-awesome";
     import {
         faHourglass,
         faPlayCircle,
     } from "@fortawesome/free-regular-svg-icons";
     import { faUndo, faTrash } from "@fortawesome/free-solid-svg-icons";
-    import type { ITracker } from "./ITracker";
 
+    import { tick } from "./store";
     const dispatch = createEventDispatcher();
 
-    export let tracker: ITracker;
+    export let id: string;
+    export let name: string;
+    export let duration: number = 0;
+    export let active: boolean = false;
 
     $: disabled = duration < 5 * 60;
 
     let showAnimation: boolean = true;
 
-    let duration: number;
-    const unsubDuration = tracker.durationStore.subscribe(
-        (value) => (duration = value)
-    );
-
-    let active: boolean;
-    const unsubActive = tracker.activeStore.subscribe(
-        (value) => (active = value)
-    );
-
+    let unsubscribe;
     onMount(() => {
+        unsubscribe = tick.subscribe((_) => {
+            if (active) intervalFunction();
+        });
+
         stopOthers();
+        start();
     });
+    onDestroy(() => unsubscribe());
 
-    onDestroy(() => {
-        unsubDuration();
-        unsubActive();
-    });
-
-    function stopOthers() {
-        if (current && current !== tracker) current.stop();
-        current = tracker;
-    }
-
-    function handleStartClick() {
-        stopOthers();
-        tracker.start();
-
+    function start() {
         showAnimation = true;
         setTimeout(() => {
             showAnimation = false;
         }, 3000);
     }
 
+    function stop() {
+        active = false;
+    }
+
+    function reset() {
+        duration = 0;
+    }
+
+    function intervalFunction() {
+        duration++;
+        dispatch("newDuration", { id, duration });
+    }
+
+    function addTime(amount: number) {
+        duration += amount * 60;
+        dispatch("newDuration", { id, duration });
+    }
+
+    function stopOthers() {
+        dispatch("startTracking", { id });
+    }
+
+    function handleStartClick() {
+        stopOthers();
+        start();
+    }
+
     function handleResetClick() {
-        if (confirm(`Reset ${tracker.name}?`)) {
-            tracker.reset();
+        if (confirm(`Reset ${name}?`)) {
+            reset();
         }
     }
 
     function handleDeleteClick() {
-        if (confirm(`Delete ${tracker.name}?`)) {
-            dispatch("delete", { id: tracker.id });
+        if (confirm(`Delete ${name}?`)) {
+            dispatch("delete", { id });
         }
     }
 </script>
 
-<li class="py-1">
+<li class="py-1" transition:fly={{ y: -100, duration: 500, easing: backInOut }}>
     <div
         class="px-4 py-2 flex flex-row shadow-md rounded gap-4 justify-between items-center"
     >
         <!-- NAME -->
-        <input class="flex-grow" type="text" bind:value={tracker.name} />
+        <input class="flex-grow" type="text" bind:value={name} />
 
         <!-- RECORDING -->
         <div>
@@ -95,10 +108,8 @@
         <div>
             <Icon data={faHourglass} />
             {new Date(duration * 1000).toISOString().substr(11, 8)}
-            <button on:click={() => tracker.addTime(5)}>+5min</button>
-            <button on:click={() => tracker.addTime(-5)} {disabled}
-                >-5min</button
-            >
+            <button on:click={() => addTime(5)}>+5min</button>
+            <button on:click={() => addTime(-5)} {disabled}>-5min</button>
         </div>
 
         <!-- BUTTONS -->
