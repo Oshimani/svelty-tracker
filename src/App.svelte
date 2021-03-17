@@ -10,7 +10,8 @@
 	let formName: string;
 
 	$: sum = trackers.reduce((acc, tracker) => acc + tracker.duration, 0);
-	$: sumFormatted = new Date(sum * 1000).toISOString().substr(11, 8)
+	$: sumFormatted = new Date(sum * 1000).toISOString().substr(11, 8);
+	$: sumStyled = `<strong>${sumFormatted.substr(0, 5)}</strong>:${sumFormatted.substr(6, 2)}`;
 
 	function stopTheCount(id?: string) {
 		console.log("ID:", id);
@@ -33,10 +34,11 @@
 		console.log(id);
 
 		trackers = trackers.filter((t) => t.id !== id);
+		backup();
 	}
 
 	function handleSubmit() {
-		trackers = [{ name: formName, id: formName }, ...trackers];
+		trackers = [{ name: formName, id: formName, duration: 0 }, ...trackers];
 		formName = "";
 	}
 
@@ -45,6 +47,7 @@
 		if (i > -1) {
 			trackers[i].duration = duration;
 		}
+		backup();
 	}
 
 	function backup() {
@@ -80,7 +83,7 @@
 		</div>
 
 		<span>
-			{sumFormatted}
+			{@html sumStyled}
 		</span>
 
 		<button

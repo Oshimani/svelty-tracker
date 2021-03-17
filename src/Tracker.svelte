@@ -20,6 +20,7 @@
 
     $: disabled = duration < 5 * 60;
     $: durationFormatted = new Date(duration * 1000).toISOString().substr(11, 8);
+	$: durationStyled = `<strong>${durationFormatted.substr(0, 5)}</strong>:${durationFormatted.substr(6, 2)}`;
 
     let showAnimation: boolean = true;
 
@@ -47,6 +48,7 @@
 
     function reset() {
         duration = 0;
+        dispatch("newDuration", { id, duration });
     }
 
     function intervalFunction() {
@@ -108,7 +110,7 @@
         <!-- TIMER -->
         <div>
             <Icon data={faHourglass} />
-            {durationFormatted}
+            {@html durationStyled}
             <button on:click={() => addTime(5)}>+5min</button>
             <button on:click={() => addTime(-5)} {disabled}>-5min</button>
         </div>
