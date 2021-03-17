@@ -19,6 +19,7 @@
     export let active: boolean = false;
 
     $: disabled = duration < 5 * 60;
+    $: durationFormatted = new Date(duration * 1000).toISOString().substr(11, 8);
 
     let showAnimation: boolean = true;
 
@@ -107,7 +108,7 @@
         <!-- TIMER -->
         <div>
             <Icon data={faHourglass} />
-            {new Date(duration * 1000).toISOString().substr(11, 8)}
+            {durationFormatted}
             <button on:click={() => addTime(5)}>+5min</button>
             <button on:click={() => addTime(-5)} {disabled}>-5min</button>
         </div>

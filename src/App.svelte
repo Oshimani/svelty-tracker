@@ -9,6 +9,9 @@
 	let trackers: any[] = [];
 	let formName: string;
 
+	$: sum = trackers.reduce((acc, tracker) => acc + tracker.duration, 0);
+	$: sumFormatted = new Date(sum * 1000).toISOString().substr(11, 8)
+
 	function stopTheCount(id?: string) {
 		console.log("ID:", id);
 
@@ -75,6 +78,10 @@
 		<div>
 			Active trackings {trackers.length}
 		</div>
+
+		<span>
+			{sumFormatted}
+		</span>
 
 		<button
 			on:click={() => stopTheCount()}
