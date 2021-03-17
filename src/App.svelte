@@ -101,8 +101,9 @@
 </script>
 
 <main>
+	<!-- HEADROW -->
 	<h1
-		class="items-baseline px-4 py-2 uppercase bg-blue-600 text-white rounded flex flex-row justify-between"
+		class="fixed z-10 w-full items-baseline px-4 py-2 uppercase bg-blue-600 text-white rounded flex flex-row justify-between"
 	>
 		<div>
 			Active trackings {trackers.length}
@@ -118,38 +119,73 @@
 			><Icon data={faCoffee} /> Stop the Count</button
 		>
 	</h1>
-	<ul>
-		{#each trackers as tracker (tracker.id)}
+
+	<!-- CONTENT -->
+	<section class="pt-16 pb-14">
+
+		<!-- TRACKER LIST -->
+		<ul>
+			{#each trackers as tracker (tracker.id)}
 			<Tracker
-				{...tracker}
-				on:delete={(e) => handleDelete(e.detail)}
-				on:start={(e) => handleStartTracking(e.detail.id)}
-				on:newDuration={(e) => handleNewDuration(e.detail)}
-				on:nameChange={(e) => handleNameChanged(e.detail)}
+			{...tracker}
+			on:delete={(e) => handleDelete(e.detail)}
+			on:start={(e) => handleStartTracking(e.detail.id)}
+			on:newDuration={(e) => handleNewDuration(e.detail)}
+			on:nameChange={(e) => handleNameChanged(e.detail)}
 			/>
-		{/each}
-	</ul>
+			{/each}
+		</ul>
+	</section>
 
-	<!-- NEW FORM -->
-	<form class="mt-4" on:submit|preventDefault={() => handleSubmit()}>
-		<input type="text" bind:value={formName} />
-		<button type="submit"><Icon data={faPlus} /> Add</button>
-	</form>
+	<div
+		class="fixed bottom-0 left-0 w-full px-8 py-4 flex flex-row justify-between items-end"
+	>
+		<!-- NEW FORM -->
+		<form
+			class="bg-gray-200 rounded-2xl px-4 py-2"
+			on:submit|preventDefault={() => handleSubmit()}
+		>
+			<input
+				placeholder="new tracker"
+				type="text"
+				bind:value={formName}
+			/>
+			<button class="ml-1 hover:bg-gray-300" type="submit"
+				><Icon data={faPlus} /> Add</button
+			>
+		</form>
 
-	<!-- BACKUP BUTTONS -->
-	<div class="absolute bottom-4 left-8">
-		<button
-			class="bg-blue-600 hover:bg-blue-500 text-white rounded-2xl px-4 py-2 shadow-xl border-none"
-			on:click={() => backup()}>Backup</button
-		>
-		<button
-			class="bg-blue-600 hover:bg-blue-500 text-white rounded-2xl px-4 py-2 shadow-xl border-none"
-			on:click={() => restoreBackup()}>Restore</button
-		>
+		<!-- BACKUP BUTTONS -->
+		<div>
+			<button
+				class="bg-blue-600 hover:bg-blue-500 text-white rounded-2xl px-4 py-2 shadow-xl border-none"
+				on:click={() => backup()}>Backup</button
+			>
+			<button
+				class="bg-blue-600 hover:bg-blue-500 text-white rounded-2xl px-4 py-2 shadow-xl border-none"
+				on:click={() => restoreBackup()}>Restore</button
+			>
+		</div>
 	</div>
 </main>
 
 <style>
+	:global(*) {
+		outline: none !important;
+	}
+	:global(body) {
+		@apply px-2;
+		@apply py-1;
+	}
+	:global(input, textarea) {
+		@apply border;
+		@apply px-2;
+		@apply py-1;
+		@apply rounded-2xl;
+	}
+	:global(input:focus, textarea:focus, button:focus) {
+		@apply ring;
+	}
 	:global(button) {
 		@apply px-4;
 		@apply py-2;

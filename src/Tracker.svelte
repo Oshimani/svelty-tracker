@@ -90,7 +90,7 @@
     }
 </script>
 
-<li class="py-1" transition:fly={{ y: -100, duration: 500, easing: backInOut }}>
+<li class="py-2" transition:fly={{ y: -100, duration: 500, easing: backInOut }}>
     <div
         class="px-4 py-2 bg-gray-50 flex flex-row shadow-md rounded gap-4 justify-between items-center"
     >
