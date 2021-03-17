@@ -22,24 +22,18 @@
     $: durationFormatted = new Date(duration * 1000).toISOString().substr(11, 8);
 	$: durationStyled = `<strong>${durationFormatted.substr(0, 5)}</strong>:${durationFormatted.substr(6, 2)}`;
 
-    let showAnimation: boolean = true;
-
     let unsubscribe;
     onMount(() => {
         unsubscribe = tick.subscribe((_) => {
             if (active) intervalFunction();
         });
 
-        stopOthers();
         start();
     });
     onDestroy(() => unsubscribe());
 
     function start() {
-        showAnimation = true;
-        setTimeout(() => {
-            showAnimation = false;
-        }, 3000);
+        dispatch("start",{id});
     }
 
     function stop() {
@@ -61,12 +55,7 @@
         dispatch("newDuration", { id, duration });
     }
 
-    function stopOthers() {
-        dispatch("startTracking", { id });
-    }
-
     function handleStartClick() {
-        stopOthers();
         start();
     }
 
@@ -95,7 +84,6 @@
             {#if active}
                 <span class="relative flex h-4 w-4">
                     <span
-                        class:hidden={!showAnimation}
                         class="absolute animate-ping inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
                     />
                     <span

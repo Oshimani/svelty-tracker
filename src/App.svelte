@@ -11,7 +11,10 @@
 
 	$: sum = trackers.reduce((acc, tracker) => acc + tracker.duration, 0);
 	$: sumFormatted = new Date(sum * 1000).toISOString().substr(11, 8);
-	$: sumStyled = `<strong>${sumFormatted.substr(0, 5)}</strong>:${sumFormatted.substr(6, 2)}`;
+	$: sumStyled = `<strong>${sumFormatted.substr(
+		0,
+		5
+	)}</strong>:${sumFormatted.substr(6, 2)}`;
 
 	function stopTheCount(id?: string) {
 		console.log("ID:", id);
@@ -66,6 +69,17 @@
 		}
 	}
 
+	function handleStartTracking(id: string) {
+		// stop all
+		stopTheCount();
+		// restart current
+		const i = trackers.findIndex((t) => t.id === id);
+		if (i > -1) {
+			trackers[i].active = true;
+		}
+		trackers = [...trackers];
+	}
+
 	onMount(() => {
 		setInterval(() => {
 			tick.update((t) => t + 1);
@@ -97,7 +111,7 @@
 			<Tracker
 				{...tracker}
 				on:delete={(e) => handleDelete(e.detail)}
-				on:startTracking={(e) => stopTheCount(e.detail.id)}
+				on:start={(e) => handleStartTracking(e.detail.id)}
 				on:newDuration={(e) => handleNewDuration(e.detail)}
 			/>
 		{/each}
