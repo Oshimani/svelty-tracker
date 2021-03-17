@@ -37,7 +37,7 @@
             if (active) intervalFunction();
         });
 
-        start();
+        if (active) start();
     });
     onDestroy(() => unsubscribe());
 
@@ -129,7 +129,10 @@
 
         <!-- BUTTONS -->
         <div class="">
-            <button on:click={() => handleStartClick()} class="bg-blue-600 hover:bg-blue-500 text-white">
+            <button
+                on:click={() => handleStartClick()}
+                class="bg-blue-600 hover:bg-blue-500 text-white"
+            >
                 <Icon data={faPlayCircle} />Start
             </button>
             <button on:click={() => handleResetClick()}

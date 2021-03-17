@@ -17,8 +17,6 @@
 	)}</strong>:${sumFormatted.substr(6, 2)}`;
 
 	function stopTheCount(id?: string) {
-		console.log("ID:", id);
-
 		trackers = [
 			...trackers.map((t) => {
 				if (t.id === id) {
@@ -56,7 +54,10 @@
 			alert(`Name: ${formName} alsready in list, name has to be unique.`);
 			return;
 		}
-		trackers = [{ name: formName, id: formName, duration: 0 }, ...trackers];
+		trackers = [
+			{ name: formName, id: formName, duration: 0, active: true },
+			...trackers,
+		];
 		formName = "";
 	}
 
@@ -88,7 +89,9 @@
 		if (backup) {
 			console.log("Found backup", backup);
 			const parsedTrackers = backup.data;
-			trackers = parsedTrackers;
+			trackers = parsedTrackers.map((t) => {
+				return { ...t, active: false };
+			});
 		}
 	}
 
@@ -122,17 +125,16 @@
 
 	<!-- CONTENT -->
 	<section class="pt-16 pb-14">
-
 		<!-- TRACKER LIST -->
 		<ul>
 			{#each trackers as tracker (tracker.id)}
-			<Tracker
-			{...tracker}
-			on:delete={(e) => handleDelete(e.detail)}
-			on:start={(e) => handleStartTracking(e.detail.id)}
-			on:newDuration={(e) => handleNewDuration(e.detail)}
-			on:nameChange={(e) => handleNameChanged(e.detail)}
-			/>
+				<Tracker
+					{...tracker}
+					on:delete={(e) => handleDelete(e.detail)}
+					on:start={(e) => handleStartTracking(e.detail.id)}
+					on:newDuration={(e) => handleNewDuration(e.detail)}
+					on:nameChange={(e) => handleNameChanged(e.detail)}
+				/>
 			{/each}
 		</ul>
 	</section>
