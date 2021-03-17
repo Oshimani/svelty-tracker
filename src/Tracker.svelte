@@ -19,8 +19,15 @@
     export let active: boolean = false;
 
     $: disabled = duration < 5 * 60;
-    $: durationFormatted = new Date(duration * 1000).toISOString().substr(11, 8);
-	$: durationStyled = `<strong>${durationFormatted.substr(0, 5)}</strong>:${durationFormatted.substr(6, 2)}`;
+    $: durationFormatted = new Date(duration * 1000)
+        .toISOString()
+        .substr(11, 8);
+    $: durationStyled = `<strong>${durationFormatted.substr(
+        0,
+        5
+    )}</strong>:${durationFormatted.substr(6, 2)}`;
+
+    let showAnimation: boolean = true;
 
     let unsubscribe;
     onMount(() => {
@@ -33,7 +40,12 @@
     onDestroy(() => unsubscribe());
 
     function start() {
-        dispatch("start",{id});
+        dispatch("start", { id });
+
+        showAnimation = true;
+        setTimeout(() => {
+            showAnimation = false;
+        }, 3000);
     }
 
     function stop() {
@@ -84,6 +96,7 @@
             {#if active}
                 <span class="relative flex h-4 w-4">
                     <span
+                        class:hidden={!showAnimation}
                         class="absolute animate-ping inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
                     />
                     <span
