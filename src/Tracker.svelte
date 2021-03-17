@@ -28,9 +28,11 @@
     )}</strong>:${durationFormatted.substr(6, 2)}`;
 
     let showAnimation: boolean = true;
+    let inputValue: string = "";
 
     let unsubscribe;
     onMount(() => {
+        inputValue = name;
         unsubscribe = tick.subscribe((_) => {
             if (active) intervalFunction();
         });
@@ -82,14 +84,23 @@
             dispatch("delete", { id });
         }
     }
+
+    function handleNameChanged() {
+        dispatch("nameChange", { name: inputValue, id });
+    }
 </script>
 
 <li class="py-1" transition:fly={{ y: -100, duration: 500, easing: backInOut }}>
     <div
-        class="px-4 py-2 flex flex-row shadow-md rounded gap-4 justify-between items-center"
+        class="px-4 py-2 bg-gray-50 flex flex-row shadow-md rounded gap-4 justify-between items-center"
     >
         <!-- NAME -->
-        <input class="flex-grow" type="text" bind:value={name} />
+        <input
+            class="flex-grow"
+            type="text"
+            bind:value={inputValue}
+            on:change={() => handleNameChanged()}
+        />
 
         <!-- RECORDING -->
         <div>
@@ -118,7 +129,7 @@
 
         <!-- BUTTONS -->
         <div class="">
-            <button on:click={() => handleStartClick()}>
+            <button on:click={() => handleStartClick()} class="bg-blue-600 hover:bg-blue-500 text-white">
                 <Icon data={faPlayCircle} />Start
             </button>
             <button on:click={() => handleResetClick()}
@@ -130,10 +141,3 @@
         </div>
     </div>
 </li>
-
-<style>
-    button {
-        @apply px-2;
-        @apply py-1;
-    }
-</style>
