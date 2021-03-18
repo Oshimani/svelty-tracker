@@ -146,12 +146,12 @@
                 on:click={() => handleStartClick()}
                 class="bg-blue-600 hover:bg-blue-500 text-white"
             >
-                <Icon data={faPlayCircle} />Start
+                <Icon data={faPlayCircle} /> Start
             </button>
-            <button on:click={() => handleResetClick()}
+            <button class="rounded-full" on:click={() => handleResetClick()}
                 ><Icon data={faUndo} /></button
             >
-            <button on:click={() => handleDeleteClick()}
+            <button class="rounded-full" on:click={() => handleDeleteClick()}
                 ><Icon data={faTrash} /></button
             >
         </div>

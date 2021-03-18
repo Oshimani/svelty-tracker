@@ -158,7 +158,7 @@
 			/>
 			<button
 				disabled={!formName}
-				class="ml-1 hover:enabled:bg-gray-300"
+				class="ml-1 bg-gray-200 hover:bg-gray-300 rounded-full"
 				type="submit"><Icon data={faPlus} /></button
 			>
 		</form>
@@ -167,12 +167,12 @@
 		<div>
 			<button
 				disabled
-				class="bg-blue-600 hover:enabled:bg-blue-500 line-through text-white rounded-2xl px-4 py-2 shadow-xl border-none"
+				class="bg-blue-600 line-through text-white rounded-2xl px-4 py-2 shadow-xl border-none"
 				on:click={() => {}}>Export</button
 			>
 			<button
 				disabled
-				class="bg-blue-600 hover:enabled:bg-blue-500 line-through text-white rounded-2xl px-4 py-2 shadow-xl border-none"
+				class="bg-blue-600 line-through text-white rounded-2xl px-4 py-2 shadow-xl border-none"
 				on:click={() => {}}>Import</button
 			>
 		</div>
