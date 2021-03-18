@@ -107,11 +107,11 @@
 	});
 </script>
 
-<main>
+<main class="w-full h-full dark:bg-gray-900 px-2 py-1">
 	<!-- HEADROW -->
 	<div class="fixed z-10 w-full top-0 left-0 px-2 py-1">
 		<header
-			class="items-baseline px-4 py-2 uppercase bg-blue-600 text-white rounded flex flex-row justify-between"
+			class="items-baseline px-4 py-2 uppercase bg-blue-600 text-white rounded flex flex-row justify-between bg-gradient-to-r dark:from-purple-600 dark:via-red-500 dark:to-yellow-400"
 		>
 			<div>
 				Active trackings {trackers.length}
@@ -150,17 +150,18 @@
 	>
 		<!-- NEW FORM -->
 		<form
-			class="bg-gray-300 rounded-2xl px-4 py-2"
+			class="bg-gray-300 dark:bg-gray-700 rounded-2xl px-4 py-2"
 			on:submit|preventDefault={() => handleSubmit()}
 		>
 			<input
+				class="dark:bg-gray-600 dark:border-gray-600 text-gray-100"
 				placeholder="new tracker"
 				type="text"
 				bind:value={formName}
 			/>
 			<button
 				disabled={!formName}
-				class="ml-1 bg-gray-300 hover:bg-gray-200 disabled:bg-gray-300 rounded-full"
+				class="ml-1 bg-gray-300 hover:bg-gray-200 disabled:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:disabled:bg-gray-700 dark:text-gray-100 rounded-full"
 				type="submit"><Icon data={faPlus} /></button
 			>
 		</form>
@@ -169,12 +170,12 @@
 		<div>
 			<button
 				disabled
-				class="bg-blue-600 line-through text-white rounded-2xl px-4 py-2 shadow-xl border-none"
+				class="bg-blue-600 line-through text-white rounded-2xl px-4 py-2 shadow-xl border-none dark:bg-gray-700 dark:hover:bg-gray-600 dark:disabled:bg-gray-700 dark:text-gray-100"
 				on:click={() => {}}>Export</button
 			>
 			<button
 				disabled
-				class="bg-blue-600 line-through text-white rounded-2xl px-4 py-2 shadow-xl border-none"
+				class="bg-blue-600 line-through text-white rounded-2xl px-4 py-2 shadow-xl border-none dark:bg-gray-700 dark:hover:bg-gray-600 dark:disabled:bg-gray-700 dark:text-gray-100"
 				on:click={() => {}}>Import</button
 			>
 		</div>
@@ -186,10 +187,12 @@
 		outline: none !important;
 	}
 	:global(body) {
-		@apply px-2;
-		@apply py-1;
 		@apply bg-gray-200;
 	}
+	:global(:dark(body)) {
+		@apply bg-gray-800;
+	}
+
 	:global(input, textarea) {
 		@apply border;
 		@apply px-2;

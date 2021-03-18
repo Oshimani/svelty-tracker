@@ -94,11 +94,11 @@
 
 <li class="py-2" transition:fly={{ y: -100, duration: 400, easing: backInOut }}>
     <div
-        class="px-4 py-2 bg-gray-50 flex flex-row shadow-md rounded gap-4 justify-between items-center"
+        class="px-4 py-2 bg-gray-50 dark:bg-gray-800 dark:text-gray-100 flex flex-row shadow-md rounded gap-4 justify-between items-center"
     >
         <!-- NAME -->
         <input
-            class="flex-grow"
+            class="flex-grow dark:bg-gray-600 dark:border-gray-600"
             type="text"
             bind:value={inputValue}
             on:change={() => handleNameChanged()}
@@ -145,14 +145,14 @@
             <button
                 disabled={active}
                 on:click={() => handleStartClick()}
-                class="bg-blue-600 hover:bg-blue-500 disabled:bg-gray-100 text-white"
+                class="bg-blue-600 hover:bg-blue-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 text-white bg-gradient-to-r dark:from-red-600 dark:via-red-500 dark:to-yellow-400 dark:hover:from-red-500 dark:hover:via-red-400 dark:hover:to-yellow-400"
             >
                 <Icon data={faPlayCircle} /> Start
             </button>
-            <button class="rounded-full" on:click={() => handleResetClick()}
+            <button class="rounded-full dark:bg-gray-700 dark:hover:bg-gray-600 dark:disabled:bg-gray-700" on:click={() => handleResetClick()}
                 ><Icon data={faUndo} /></button
             >
-            <button class="rounded-full" on:click={() => handleDeleteClick()}
+            <button class="rounded-full dark:bg-gray-700 dark:hover:bg-gray-600 dark:disabled:bg-gray-700" on:click={() => handleDeleteClick()}
                 ><Icon data={faTrash} /></button
             >
         </div>
