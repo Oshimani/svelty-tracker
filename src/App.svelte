@@ -100,6 +100,10 @@
 			tick.update((t) => t + 1);
 		}, 1000);
 		restoreBackup();
+
+		// window.onbeforeunload = function () {
+		// 	return "Your tracker will stop working when you leave this page";
+		// };
 	});
 </script>
 
@@ -192,8 +196,13 @@
 		@apply px-4;
 		@apply py-2;
 		@apply rounded-2xl;
+		@apply bg-gray-50;
 	}
 	:global(button:hover) {
 		@apply bg-gray-200;
+	}
+	:global(button:disabled){
+		@apply text-gray-500;
+		@apply bg-gray-100;
 	}
 </style>

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher, onDestroy, onMount } from "svelte";
-    import { fade, fly } from "svelte/transition";
-    import { backIn, backInOut } from "svelte/easing";
+    import { fly } from "svelte/transition";
+    import { backInOut } from "svelte/easing";
 
     import Icon from "svelte-awesome";
     import {
@@ -11,6 +11,8 @@
     import { faUndo, faTrash } from "@fortawesome/free-solid-svg-icons";
 
     import { tick } from "./store";
+    import AddTime from "./components/AddTime.svelte";
+
     const dispatch = createEventDispatcher();
 
     export let id: string;
@@ -64,8 +66,8 @@
         dispatch("newDuration", { id, duration });
     }
 
-    function addTime(amount: number) {
-        duration += amount * 60;
+    function addTime(amount: number) {      
+        duration += amount;
         dispatch("newDuration", { id, duration });
     }
 
@@ -120,11 +122,22 @@
         </div>
 
         <!-- TIMER -->
-        <div>
-            <Icon data={faHourglass} />
-            {@html durationStyled}
-            <button on:click={() => addTime(5)}>+5min</button>
-            <button on:click={() => addTime(-5)} {disabled}>-5min</button>
+        <div class="flex flex-row items-baseline">
+            <div class="mr-2 items-baseline">
+                <Icon data={faHourglass} />
+                {@html durationStyled}
+            </div>
+
+            <AddTime {duration}
+                on:timeChange={(e) => addTime(e.detail.value)}
+                manipulation="add"
+            />
+            <AddTime {duration}
+                on:timeChange={(e) => addTime(e.detail.value)}
+                manipulation="sub"
+            />
+            <!-- <button on:click={() => addTime(5)}>+5min</button>
+            <button on:click={() => addTime(-5)} {disabled}>-5min</button> -->
         </div>
 
         <!-- BUTTONS -->
