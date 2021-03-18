@@ -109,23 +109,25 @@
 
 <main>
 	<!-- HEADROW -->
-	<h1
-		class="fixed z-10 w-full items-baseline px-4 py-2 uppercase bg-blue-600 text-white rounded flex flex-row justify-between"
-	>
-		<div>
-			Active trackings {trackers.length}
-		</div>
-
-		<span>
-			{@html sumStyled}
-		</span>
-
-		<button
-			on:click={() => stopTheCount()}
-			class="bg-red-500 hover:bg-red-400 uppercase border-none"
-			><Icon data={faCoffee} /> Stop the Count</button
+	<div class="fixed z-10 w-full top-0 left-0 px-2 py-1">
+		<header
+			class="items-baseline px-4 py-2 uppercase bg-blue-600 text-white rounded flex flex-row justify-between"
 		>
-	</h1>
+			<div>
+				Active trackings {trackers.length}
+			</div>
+
+			<span>
+				{@html sumStyled}
+			</span>
+
+			<button
+				on:click={() => stopTheCount()}
+				class="bg-red-500 hover:bg-red-400 uppercase border-none"
+				><Icon data={faCoffee} /> Stop the Count</button
+			>
+		</header>
+	</div>
 
 	<!-- CONTENT -->
 	<section class="pt-16 pb-14">
@@ -148,7 +150,7 @@
 	>
 		<!-- NEW FORM -->
 		<form
-			class="bg-gray-200 rounded-2xl px-4 py-2"
+			class="bg-gray-300 rounded-2xl px-4 py-2"
 			on:submit|preventDefault={() => handleSubmit()}
 		>
 			<input
@@ -158,7 +160,7 @@
 			/>
 			<button
 				disabled={!formName}
-				class="ml-1 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-200 rounded-full"
+				class="ml-1 bg-gray-300 hover:bg-gray-200 disabled:bg-gray-300 rounded-full"
 				type="submit"><Icon data={faPlus} /></button
 			>
 		</form>
@@ -186,6 +188,7 @@
 	:global(body) {
 		@apply px-2;
 		@apply py-1;
+		@apply bg-gray-200;
 	}
 	:global(input, textarea) {
 		@apply border;
