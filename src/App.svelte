@@ -156,7 +156,7 @@
 				type="text"
 				bind:value={formName}
 			/>
-			<button class="ml-1 hover:bg-gray-300" type="submit"
+			<button disabled={!formName} class="ml-1 hover:enabled:bg-gray-300" type="submit"
 				><Icon data={faPlus} /> Add</button
 			>
 		</form>
