@@ -158,7 +158,7 @@
 			/>
 			<button
 				disabled={!formName}
-				class="ml-1 bg-gray-200 hover:bg-gray-300 rounded-full"
+				class="ml-1 bg-gray-200 hover:bg-gray-300 disabled:bg-gray-200 rounded-full"
 				type="submit"><Icon data={faPlus} /></button
 			>
 		</form>

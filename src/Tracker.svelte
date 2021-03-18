@@ -66,7 +66,7 @@
         dispatch("newDuration", { id, duration });
     }
 
-    function addTime(amount: number) {      
+    function addTime(amount: number) {
         duration += amount;
         dispatch("newDuration", { id, duration });
     }
@@ -128,23 +128,24 @@
                 {@html durationStyled}
             </div>
 
-            <AddTime {duration}
+            <AddTime
+                {duration}
                 on:timeChange={(e) => addTime(e.detail.value)}
                 manipulation="add"
             />
-            <AddTime {duration}
+            <AddTime
+                {duration}
                 on:timeChange={(e) => addTime(e.detail.value)}
                 manipulation="sub"
             />
-            <!-- <button on:click={() => addTime(5)}>+5min</button>
-            <button on:click={() => addTime(-5)} {disabled}>-5min</button> -->
         </div>
 
         <!-- BUTTONS -->
         <div class="">
             <button
+                disabled={active}
                 on:click={() => handleStartClick()}
-                class="bg-blue-600 hover:bg-blue-500 text-white"
+                class="bg-blue-600 hover:bg-blue-500 disabled:bg-gray-100 text-white"
             >
                 <Icon data={faPlayCircle} /> Start
             </button>
