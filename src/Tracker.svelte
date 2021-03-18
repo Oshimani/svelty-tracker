@@ -149,10 +149,10 @@
                 <Icon data={faPlayCircle} />Start
             </button>
             <button on:click={() => handleResetClick()}
-                ><Icon data={faUndo} />Reset</button
+                ><Icon data={faUndo} /></button
             >
             <button on:click={() => handleDeleteClick()}
-                ><Icon data={faTrash} />Delete</button
+                ><Icon data={faTrash} /></button
             >
         </div>
     </div>

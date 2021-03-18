@@ -156,20 +156,24 @@
 				type="text"
 				bind:value={formName}
 			/>
-			<button disabled={!formName} class="ml-1 hover:enabled:bg-gray-300" type="submit"
-				><Icon data={faPlus} /> Add</button
+			<button
+				disabled={!formName}
+				class="ml-1 hover:enabled:bg-gray-300"
+				type="submit"><Icon data={faPlus} /></button
 			>
 		</form>
 
 		<!-- BACKUP BUTTONS -->
 		<div>
 			<button
-				class="bg-blue-600 hover:bg-blue-500 text-white rounded-2xl px-4 py-2 shadow-xl border-none"
-				on:click={() => backup()}>Backup</button
+				disabled
+				class="bg-blue-600 hover:enabled:bg-blue-500 line-through text-white rounded-2xl px-4 py-2 shadow-xl border-none"
+				on:click={() => {}}>Export</button
 			>
 			<button
-				class="bg-blue-600 hover:bg-blue-500 text-white rounded-2xl px-4 py-2 shadow-xl border-none"
-				on:click={() => restoreBackup()}>Restore</button
+				disabled
+				class="bg-blue-600 hover:enabled:bg-blue-500 line-through text-white rounded-2xl px-4 py-2 shadow-xl border-none"
+				on:click={() => {}}>Import</button
 			>
 		</div>
 	</div>
@@ -201,7 +205,7 @@
 	:global(button:hover) {
 		@apply bg-gray-200;
 	}
-	:global(button:disabled){
+	:global(button:disabled) {
 		@apply text-gray-500;
 		@apply bg-gray-100;
 	}
