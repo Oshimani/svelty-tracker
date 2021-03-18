@@ -107,6 +107,9 @@
 	});
 </script>
 
+<!-- DARKMODE BACKGROUND -->
+<div style="height:100vh; width:100vw; z-index:-1" class="fixed top-0 left-0 bg-transparent dark:bg-gray-800"></div>
+
 <main class="w-full h-full dark:bg-gray-900 px-2 py-1">
 	<!-- HEADROW -->
 	<div class="fixed z-10 w-full top-0 left-0 px-2 py-1">
