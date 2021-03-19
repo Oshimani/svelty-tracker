@@ -15,6 +15,8 @@
 		0,
 		5
 	)}</strong>:${sumFormatted.substr(6, 2)}`;
+	$: isAnyTrackerActive = trackers.findIndex((t) => t.active) > -1;
+	$: activeIcon = isAnyTrackerActive ?  "🔴": "⏸️";
 
 	function stopTheCount(id?: string) {
 		trackers = [
@@ -106,6 +108,10 @@
 		// };
 	});
 </script>
+
+<svelte:head>
+	<title>JJ-Tracker - {sumFormatted} {activeIcon}</title>
+</svelte:head>
 
 <main class="w-full h-full px-2 py-1">
 	<!-- HEADROW -->
