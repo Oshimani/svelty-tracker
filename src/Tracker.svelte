@@ -145,7 +145,7 @@
             <button
                 disabled={active}
                 on:click={() => handleStartClick()}
-                class="bg-blue-600 hover:bg-blue-500 disabled:bg-gray-100 dark:disabled:bg-gray-700 text-white bg-gradient-to-r dark:from-red-600 dark:via-red-500 dark:to-yellow-400 dark:hover:from-red-500 dark:hover:via-red-400 dark:hover:to-yellow-400"
+                class="bg-blue-600 hover:bg-blue-500 disabled:bg-gray-100 text-white bg-gradient-to-r dark:from-red-600 dark:via-red-500 dark:to-yellow-400 dark:hover:from-red-500 dark:hover:via-red-400 dark:hover:to-yellow-400 dark:disabled:from-gray-700 dark:disabled:to-gray-700"
             >
                 <Icon data={faPlayCircle} /> Start
             </button>
