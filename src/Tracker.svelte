@@ -122,8 +122,8 @@
         </div>
 
         <!-- TIMER -->
-        <div class="flex flex-row items-baseline">
-            <div class="mr-2 items-baseline">
+        <div class="flex flex-row items-baseline gap-1">
+            <div class=" items-baseline">
                 <Icon data={faHourglass} />
                 {@html durationStyled}
             </div>
