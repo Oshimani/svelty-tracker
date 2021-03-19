@@ -110,24 +110,25 @@
                 <span class="relative flex h-4 w-4">
                     <span
                         class:hidden={!showAnimation}
-                        class="absolute animate-ping inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
+                        class="absolute animate-ping inline-flex h-full w-full rounded-full bg-red-500 opacity-75"
                     />
                     <span
-                        class="relative inline-flex rounded-full h-4 w-4 bg-red-500"
+                        class="relative inline-flex rounded-full h-4 w-4 bg-red-600"
                     />
                 </span>
             {:else}
-                <span class="relative h-4 w-4 inline-flex" />
+                <span
+                    class="relative inline-flex rounded-full h-4 w-4 bg-red-800 opacity-40"
+                />
             {/if}
         </div>
 
         <!-- TIMER -->
+        <div class=" items-baseline">
+            <Icon data={faHourglass} />
+            {@html durationStyled}
+        </div>
         <div class="flex flex-row items-baseline gap-1">
-            <div class=" items-baseline">
-                <Icon data={faHourglass} />
-                {@html durationStyled}
-            </div>
-
             <AddTime
                 {duration}
                 on:timeChange={(e) => addTime(e.detail.value)}
@@ -149,10 +150,14 @@
             >
                 <Icon data={faPlayCircle} /> Start
             </button>
-            <button class="rounded-full dark:bg-gray-700 dark:hover:bg-gray-600 dark:disabled:bg-gray-700" on:click={() => handleResetClick()}
+            <button
+                class="rounded-full dark:bg-gray-700 dark:hover:bg-gray-600 dark:disabled:bg-gray-700"
+                on:click={() => handleResetClick()}
                 ><Icon data={faUndo} /></button
             >
-            <button class="rounded-full dark:bg-gray-700 dark:hover:bg-gray-600 dark:disabled:bg-gray-700" on:click={() => handleDeleteClick()}
+            <button
+                class="rounded-full dark:bg-gray-700 dark:hover:bg-gray-600 dark:disabled:bg-gray-700"
+                on:click={() => handleDeleteClick()}
                 ><Icon data={faTrash} /></button
             >
         </div>
