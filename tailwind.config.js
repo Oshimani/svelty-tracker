@@ -18,7 +18,9 @@ module.exports = {
   variants: {
     extend: {
       backgroundColor:['disabled'],
-      gradientColorStops:['disabled']
+      textColor:['disabled'],
+      gradientColorStops:['disabled'],
+      cursor:['disabled']
     },
   },
   plugins: [],

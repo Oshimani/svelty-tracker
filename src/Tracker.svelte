@@ -12,12 +12,19 @@
 
     import { tick } from "./store";
     import AddTime from "./components/AddTime.svelte";
+    import {
+        BUTTON,
+        INPUT,
+        PRIMARY_BUTTON,
+        SECONDARY_BUTTON,
+    } from "./styles/theme";
 
     const dispatch = createEventDispatcher();
 
     export let id: string;
     export let name: string;
     export let duration: number = 0;
+    export let target: number = 0;
     export let active: boolean = false;
 
     $: disabled = duration < 5 * 60;
@@ -96,9 +103,10 @@
     <div
         class="px-4 py-2 bg-gray-50 dark:bg-gray-800 dark:text-gray-100 flex flex-row shadow-md rounded gap-4 justify-between items-center"
     >
+        {target}
         <!-- NAME -->
         <input
-            class="flex-grow dark:bg-gray-600 dark:border-gray-600"
+            class={`${INPUT} flex-grow`}
             type="text"
             bind:value={inputValue}
             on:change={() => handleNameChanged()}
@@ -146,17 +154,17 @@
             <button
                 disabled={active}
                 on:click={() => handleStartClick()}
-                class="bg-blue-600 hover:bg-blue-500 disabled:bg-gray-100 text-white bg-gradient-to-r dark:from-red-600 dark:via-red-500 dark:to-yellow-400 dark:hover:from-red-500 dark:hover:via-red-400 dark:hover:to-yellow-400 dark:disabled:from-gray-700 dark:disabled:to-gray-700"
+                class={`${BUTTON} ${PRIMARY_BUTTON}`}
             >
                 <Icon data={faPlayCircle} /> Start
             </button>
             <button
-                class="rounded-full dark:bg-gray-700 dark:hover:bg-gray-600 dark:disabled:bg-gray-700"
+                class={`${BUTTON} ${SECONDARY_BUTTON}`}
                 on:click={() => handleResetClick()}
                 ><Icon data={faUndo} /></button
             >
             <button
-                class="rounded-full dark:bg-gray-700 dark:hover:bg-gray-600 dark:disabled:bg-gray-700"
+                class={`${BUTTON} ${SECONDARY_BUTTON}`}
                 on:click={() => handleDeleteClick()}
                 ><Icon data={faTrash} /></button
             >

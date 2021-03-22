@@ -1,13 +1,17 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { faCoffee, faPlus } from "@fortawesome/free-solid-svg-icons";
+	import { faCoffee } from "@fortawesome/free-solid-svg-icons";
 	import Icon from "svelte-awesome";
 
+	import type { ITracker } from "./models/ITracker";
+
 	import { tick } from "./store";
+
 	import Tracker from "./Tracker.svelte";
+	import Form from "./components/Form.svelte";
+	import { BUTTON } from "./styles/theme";
 
 	let trackers: any[] = [];
-	let formName: string;
 
 	$: sum = trackers.reduce((acc, tracker) => acc + tracker.duration, 0);
 	$: sumFormatted = new Date(sum * 1000).toISOString().substr(11, 8);
@@ -16,7 +20,7 @@
 		5
 	)}</strong>:${sumFormatted.substr(6, 2)}`;
 	$: isAnyTrackerActive = trackers.findIndex((t) => t.active) > -1;
-	$: activeIcon = isAnyTrackerActive ?  "🔴": "⏸️";
+	$: activeIcon = isAnyTrackerActive ? "🔴" : "⏸️";
 
 	function stopTheCount(id?: string) {
 		trackers = [
@@ -51,16 +55,12 @@
 		backup();
 	}
 
-	function handleSubmit() {
-		if (trackers.find((t) => t.name === formName)) {
-			alert(`Name: ${formName} alsready in list, name has to be unique.`);
-			return;
-		}
-		trackers = [
-			{ name: formName, id: formName, duration: 0, active: true },
-			...trackers,
-		];
-		formName = "";
+	function handleSubmit(newTracker: ITracker) {
+		trackers = [newTracker, ...trackers];
+	}
+
+	function isIdFree(id: string): boolean {
+		return trackers.findIndex((t) => t.id === id) === -1;
 	}
 
 	function handleNewDuration({ id, duration }) {
@@ -129,7 +129,7 @@
 
 			<button
 				on:click={() => stopTheCount()}
-				class="bg-red-500 hover:bg-red-400 uppercase border-none"
+				class={`${BUTTON} bg-red-500 hover:bg-red-400 uppercase border-none`}
 				><Icon data={faCoffee} /> Stop the Count</button
 			>
 		</header>
@@ -155,36 +155,10 @@
 		class="fixed bottom-0 left-0 w-full px-8 py-4 flex flex-row justify-between items-end"
 	>
 		<!-- NEW FORM -->
-		<form
-			class="bg-gray-300 dark:bg-gray-700 rounded-2xl px-4 py-2"
-			on:submit|preventDefault={() => handleSubmit()}
-		>
-			<input
-				class="dark:bg-gray-600 dark:border-gray-600 text-gray-100"
-				placeholder="new tracker"
-				type="text"
-				bind:value={formName}
-			/>
-			<button
-				disabled={!formName}
-				class="ml-1 bg-gray-300 hover:bg-gray-200 disabled:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:disabled:bg-gray-700 dark:text-gray-100 rounded-full"
-				type="submit"><Icon data={faPlus} /></button
-			>
-		</form>
-
-		<!-- BACKUP BUTTONS -->
-		<div>
-			<button
-				disabled
-				class="bg-blue-600 line-through text-white rounded-2xl px-4 py-2 shadow-xl border-none dark:bg-gray-700 dark:hover:bg-gray-600 dark:disabled:bg-gray-700 dark:text-gray-100"
-				on:click={() => {}}>Export</button
-			>
-			<button
-				disabled
-				class="bg-blue-600 line-through text-white rounded-2xl px-4 py-2 shadow-xl border-none dark:bg-gray-700 dark:hover:bg-gray-600 dark:disabled:bg-gray-700 dark:text-gray-100"
-				on:click={() => {}}>Import</button
-			>
-		</div>
+		<Form
+			submit={(newTracker) => handleSubmit(newTracker)}
+			checkID={(id) => isIdFree(id)}
+		/>
 	</div>
 </main>
 
@@ -195,27 +169,7 @@
 	:global(body) {
 		@apply bg-gray-200 dark:bg-gray-900;
 	}
-
-	:global(input, textarea) {
-		@apply border;
-		@apply px-2;
-		@apply py-1;
-		@apply rounded-2xl;
-	}
 	:global(input:focus, textarea:focus, button:focus) {
 		@apply ring;
-	}
-	:global(button) {
-		@apply px-4;
-		@apply py-2;
-		@apply rounded-2xl;
-		@apply bg-gray-50;
-	}
-	:global(button:hover) {
-		@apply bg-gray-200;
-	}
-	:global(button:disabled) {
-		@apply text-gray-500;
-		@apply bg-gray-100;
 	}
 </style>

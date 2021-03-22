@@ -2,6 +2,7 @@
     import { fade } from "svelte/transition";
     import { sineInOut } from "svelte/easing";
     import { createEventDispatcher } from "svelte";
+    import { BUTTON, SECONDARY_BUTTON } from "../styles/theme";
 
     const dispatch = createEventDispatcher();
 
@@ -45,13 +46,14 @@
             disabled={manipulation === "sub" && topButtonValue > duration}
             on:click={() => handleClick(topButtonValue)}
             transition:fade={{ duration: 120, easing: sineInOut }}
-            class="absolute shadow-md bottom-10 z-20 dark:bg-gray-700 dark:hover:bg-gray-600 dark:disabled:bg-gray-700">{sign}1h</button
+            class={`${BUTTON} ${SECONDARY_BUTTON} absolute shadow-md bottom-10 z-20`}
+            >{sign}1h</button
         >
     {/if}
 
     <div>
         <button
-        class="dark:bg-gray-700 dark:hover:bg-gray-600 dark:disabled:bg-gray-700"
+            class={`${BUTTON} ${SECONDARY_BUTTON}`}
             disabled={manipulation === "sub" && centerButtonValue > duration}
             on:click={() => handleClick(centerButtonValue)}
             class:shadow-md={showButtons}>{sign}15min</button
@@ -63,7 +65,8 @@
             disabled={manipulation === "sub" && buttonButtonValue > duration}
             on:click={() => handleClick(buttonButtonValue)}
             transition:fade={{ duration: 120, easing: sineInOut }}
-            class="absolute shadow-md top-10 z-20 dark:bg-gray-700 dark:hover:bg-gray-600 dark:disabled:bg-gray-700">{sign}5min</button
+            class={`${BUTTON} ${SECONDARY_BUTTON} absolute shadow-md top-10 z-20`}
+            >{sign}5min</button
         >
     {/if}
 </section>
