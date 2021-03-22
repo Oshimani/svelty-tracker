@@ -3,7 +3,6 @@
     import Icon from "svelte-awesome";
 
     import { createEventDispatcher } from "svelte";
-    import { BUTTON, INPUT, SECONDARY_BUTTON } from "../styles/theme";
 
     const dispatch = createEventDispatcher();
     export let unit: string;
@@ -38,12 +37,12 @@
     </p>
 
     <button
-        class={`${BUTTON} ${SECONDARY_BUTTON} w-16`}
+        class={`btn secondary-btn w-16`}
         on:click|preventDefault={() => onAddTime(addAmount)}
         ><Icon data={faPlus} /></button
     >
     <input
-        class={`${INPUT} text-center w-16`}
+        class={`input text-center w-16`}
         placeholder={unit}
         bind:value={duration}
         on:change={() => onChange()}
@@ -53,7 +52,7 @@
     />
     <button
         {disabled}
-        class={`${BUTTON} ${SECONDARY_BUTTON} w-16`}
+        class={`btn secondary-btn w-16`}
         on:click|preventDefault={() => onAddTime(addAmount * -1)}
         ><Icon data={faMinus} /></button
     >

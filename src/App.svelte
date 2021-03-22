@@ -9,7 +9,6 @@
 
 	import Tracker from "./Tracker.svelte";
 	import Form from "./components/Form.svelte";
-	import { BUTTON } from "./styles/theme";
 
 	let trackers: any[] = [];
 
@@ -129,7 +128,7 @@
 
 			<button
 				on:click={() => stopTheCount()}
-				class={`${BUTTON} bg-red-500 hover:bg-red-400 uppercase border-none`}
+				class={`btn bg-red-500 hover:bg-red-400 uppercase border-none`}
 				><Icon data={faCoffee} /> Stop the Count</button
 			>
 		</header>

@@ -12,12 +12,6 @@
 
     import { tick } from "./store";
     import AddTime from "./components/AddTime.svelte";
-    import {
-        BUTTON,
-        INPUT,
-        PRIMARY_BUTTON,
-        SECONDARY_BUTTON,
-    } from "./styles/theme";
 
     const dispatch = createEventDispatcher();
 
@@ -105,7 +99,7 @@
     >
         <!-- NAME -->
         <input
-            class={`${INPUT} flex-grow`}
+            class={`input flex-grow`}
             type="text"
             bind:value={inputValue}
             on:change={() => handleNameChanged()}
@@ -153,17 +147,17 @@
             <button
                 disabled={active}
                 on:click={() => handleStartClick()}
-                class={`${BUTTON} ${PRIMARY_BUTTON}`}
+                class={`btn primary-btn`}
             >
                 <Icon data={faPlayCircle} /> Start
             </button>
             <button
-                class={`${BUTTON} ${SECONDARY_BUTTON}`}
+                class={`btn secondary-btn`}
                 on:click={() => handleResetClick()}
                 ><Icon data={faUndo} /></button
             >
             <button
-                class={`${BUTTON} ${SECONDARY_BUTTON}`}
+                class={`btn secondary-btn`}
                 on:click={() => handleDeleteClick()}
                 ><Icon data={faTrash} /></button
             >

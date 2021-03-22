@@ -4,7 +4,6 @@
     import Icon from "svelte-awesome";
 
     import type { ITracker } from "../models/ITracker";
-    import { BUTTON, INPUT, SECONDARY_BUTTON } from "../styles/theme";
 
     import NumberInput from "./NumberInput.svelte";
     import { backInOut } from "svelte/easing";
@@ -51,7 +50,7 @@
 
     function handleDurationChange(value: number, unit: string) {
         console.log(value);
-        
+
         switch (unit) {
             case "hours":
                 targetHours = value;
@@ -72,15 +71,13 @@
     on:submit|preventDefault={() => saveName()}
 >
     <input
-        class={INPUT}
+        class="input"
         placeholder="title for new tracker"
         type="text"
         bind:value={name}
     />
-    <button
-        disabled={!name}
-        class={`${BUTTON} ${SECONDARY_BUTTON} ml-1`}
-        type="submit"><Icon data={faPlus} /></button
+    <button disabled={!name} class={`btn secondary-btn ml-1`} type="submit"
+        ><Icon data={faPlus} /></button
     >
 </form>
 
@@ -108,11 +105,13 @@
         <section class="px-12">
             <div class="flex flex-row gap-2 justify-evenly">
                 <NumberInput
-                    on:change={(e) => handleDurationChange(e.detail.duration, "hours")}
+                    on:change={(e) =>
+                        handleDurationChange(e.detail.duration, "hours")}
                     unit="hours"
                 />
                 <NumberInput
-                    on:change={(e) => handleDurationChange(e.detail.duration, "minutes")}
+                    on:change={(e) =>
+                        handleDurationChange(e.detail.duration, "minutes")}
                     addAmount={5}
                     unit="minutes"
                 />
@@ -128,12 +127,12 @@
                     on:click={() => {
                         showModal = false;
                     }}
-                    class={`${BUTTON} ${SECONDARY_BUTTON}`}>Cancel</button
+                    class={`btn secondary-btn`}>Cancel</button
                 >
                 <button
                     bind:this={submitButton}
                     on:click={() => handleSubmit()}
-                    class={`${BUTTON} ${SECONDARY_BUTTON}`}>Submit</button
+                    class={`btn secondary-btn`}>Submit</button
                 >
             </div>
         </footer>
