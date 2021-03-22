@@ -18,7 +18,7 @@
             /* disabled */
             @apply disabled:cursor-default disabled:bg-gray-100;
             /* disabled dark */
-            @apply dark:disabled:bg-gray-700 dark:disabled:from-gray-700 dark:disabled:to-gray-700 dark:disabled:text-gray-400;
+            @apply dark:disabled:bg-gray-700 dark:disabled:from-gray-700 dark:disabled:to-gray-700 dark:disabled:text-gray-400 !important;
         }
         /* .btn, */
         .primary-btn {

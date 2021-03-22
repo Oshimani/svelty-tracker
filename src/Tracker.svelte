@@ -1,6 +1,6 @@
 <script lang="ts">
     import { createEventDispatcher, onDestroy, onMount } from "svelte";
-    import { fly } from "svelte/transition";
+    import { fly, scale } from "svelte/transition";
     import { backInOut } from "svelte/easing";
 
     import Icon from "svelte-awesome";
@@ -8,7 +8,11 @@
         faHourglass,
         faPlayCircle,
     } from "@fortawesome/free-regular-svg-icons";
-    import { faUndo, faTrash } from "@fortawesome/free-solid-svg-icons";
+    import {
+        faUndo,
+        faTrash,
+        faCrosshairs,
+    } from "@fortawesome/free-solid-svg-icons";
 
     import { tick } from "./store";
     import AddTime from "./components/AddTime.svelte";
@@ -21,14 +25,13 @@
     export let target: number = 0;
     export let active: boolean = false;
 
-    $: disabled = duration < 5 * 60;
-    $: durationFormatted = new Date(duration * 1000)
-        .toISOString()
-        .substr(11, 8);
-    $: durationStyled = `<strong>${durationFormatted.substr(
-        0,
-        5
-    )}</strong>:${durationFormatted.substr(6, 2)}`;
+    $: durationFormatted = formatDate(duration);
+    $: durationStyled = styleDate(durationFormatted);
+
+    $: targetFormatted = formatDate(target);
+    $: targetStyled = styleDate(targetFormatted);
+    $: precentUsed =
+        (duration / target) * 100 <= 100 ? (duration / target) * 100 : 100;
 
     let showAnimation: boolean = true;
     let inputValue: string = "";
@@ -44,6 +47,13 @@
     });
     onDestroy(() => unsubscribe());
 
+    function formatDate(value: number) {
+        return new Date(value * 1000).toISOString().substr(11, 8);
+    }
+    function styleDate(value: string) {
+        return `<strong>${value.substr(0, 5)}</strong>:${value.substr(6, 2)}`;
+    }
+
     function start() {
         dispatch("start", { id });
 
@@ -51,10 +61,6 @@
         setTimeout(() => {
             showAnimation = false;
         }, 3000);
-    }
-
-    function stop() {
-        active = false;
     }
 
     function reset() {
@@ -95,18 +101,19 @@
 
 <li class="py-2" transition:fly={{ y: -100, duration: 400, easing: backInOut }}>
     <div
+        class:rounded-b-none={target > 0}
         class="px-4 py-2 bg-gray-50 dark:bg-gray-800 dark:text-gray-100 flex flex-row shadow-md rounded gap-4 justify-between items-center"
     >
         <!-- NAME -->
         <input
-            class={`input flex-grow`}
+            class={`input flex-grow overflow-hidden`}
             type="text"
             bind:value={inputValue}
             on:change={() => handleNameChanged()}
         />
 
         <!-- RECORDING -->
-        <div>
+        <div class="flex flex-col justify-center">
             {#if active}
                 <span class="relative flex h-4 w-4">
                     <span
@@ -122,6 +129,12 @@
                     class="relative inline-flex rounded-full h-4 w-4 bg-red-800 opacity-40"
                 />
             {/if}
+        </div>
+
+        <!-- TARGET -->
+        <div>
+            <Icon data={faCrosshairs} />
+            {@html targetStyled}
         </div>
 
         <!-- TIMER -->
@@ -163,4 +176,25 @@
             >
         </div>
     </div>
+
+    <!-- PROGRESS BAR -->
+    <div class="relative">
+        <div class="overflow-hidden h-1 w-full rounded-b">
+            <div
+                transition:scale
+                style={`width: ${precentUsed}%`}
+                class:hidden={target === 0}
+                class="prog-bar h-1 bg-blue-600 bg-gradient-to-r dark:from-purple-600 dark:via-red-500 dark:to-yellow-400"
+            />
+        </div>
+    </div>
 </li>
+
+<style>
+    .prog-bar {
+        -webkit-transition: width 1s linear;
+        -moz-transition: width 1s linear;
+        -o-transition: width 1s linear;
+        transition: width 1s linear;
+    }
+</style>
