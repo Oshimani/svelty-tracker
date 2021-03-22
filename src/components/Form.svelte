@@ -96,7 +96,8 @@
         class="app-modal fixed bg-gray-50 dark:text-gray-100  dark:bg-gray-800 shadow-md rounded-2xl flex flex-col gap-4"
     >
         <header class="">
-            <h1 class="mb-4 text-center px-12 pt-4">Set target duration</h1>
+            <h1 class=" text-center px-12 pt-4">Set target duration</h1>
+            <p class="text-sm text-center text-gray-600">(leave at 0 for no target duration)</p>
             <div
                 class="w-full h-1 bg-blue-600 bg-gradient-to-r dark:from-purple-600 dark:via-red-500 dark:to-yellow-400"
             />
