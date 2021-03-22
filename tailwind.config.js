@@ -17,10 +17,10 @@ module.exports = {
   },
   variants: {
     extend: {
+      cursor:['disabled'],
       backgroundColor:['disabled'],
       textColor:['disabled'],
-      gradientColorStops:['disabled'],
-      cursor:['disabled']
+      gradientColorStops:['disabled']
     },
   },
   plugins: [],
