@@ -171,4 +171,36 @@
 	:global(input:focus, textarea:focus, button:focus) {
 		@apply ring;
 	}
+
+	:global(.btn) {
+		/* general */
+		@apply rounded-2xl px-4 py-2;
+		/* general dark */
+		@apply dark:text-gray-100;
+		/* disabled */
+		@apply disabled:cursor-default disabled:bg-gray-100 disabled:text-gray-500 !important;
+		/* disabled dark */
+		@apply dark:disabled:bg-gray-700 dark:disabled:from-gray-700 dark:disabled:to-gray-700 dark:disabled:text-gray-400 !important;
+	}
+	/* .btn, */
+	:global(.primary-btn) {
+		/* general */
+		@apply bg-blue-600 hover:bg-blue-500 text-white;
+		/* general dark */
+		@apply bg-gradient-to-r dark:from-red-600 dark:via-red-500 dark:to-yellow-400 dark:hover:from-red-500 dark:hover:via-red-400 dark:hover:to-yellow-400;
+	}
+	/* .btn, */
+	:global(.secondary-btn) {
+		/* general */
+		@apply bg-gray-50 hover:bg-gray-100;
+		/* general dark */
+		@apply dark:bg-gray-800 dark:hover:bg-gray-700;
+	}
+
+	:global(.input) {
+		/* general */
+		@apply px-4 py-1 rounded-2xl shadow-inner;
+		/* general dark */
+		@apply dark:bg-gray-600 dark:border-gray-600 dark:text-gray-100;
+	}
 </style>

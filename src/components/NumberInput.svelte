@@ -32,7 +32,7 @@
 </script>
 
 <div class="flex flex-col gap-2">
-    <p class="text-xs text-center text-gray-100 lowercase">
+    <p class="text-xs text-center dark:text-gray-100 lowercase">
         {unit}
     </p>
 

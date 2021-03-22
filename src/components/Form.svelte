@@ -93,7 +93,7 @@
     <!-- MODAL -->
     <div
         transition:fly={{ y: -800, duration: 400, easing: backInOut }}
-        class="app-modal fixed text-gray-100 shadow-md bg-gray-800 rounded-2xl flex flex-col gap-4"
+        class="app-modal fixed bg-gray-50 dark:text-gray-100  dark:bg-gray-800 shadow-md rounded-2xl flex flex-col gap-4"
     >
         <header class="">
             <h1 class="mb-4 text-center px-12 pt-4">Set target duration</h1>
