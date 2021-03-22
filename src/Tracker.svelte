@@ -103,7 +103,6 @@
     <div
         class="px-4 py-2 bg-gray-50 dark:bg-gray-800 dark:text-gray-100 flex flex-row shadow-md rounded gap-4 justify-between items-center"
     >
-        {target}
         <!-- NAME -->
         <input
             class={`${INPUT} flex-grow`}
