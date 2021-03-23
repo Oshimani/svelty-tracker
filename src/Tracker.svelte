@@ -16,6 +16,7 @@
 
     import { tick } from "./store";
     import AddTime from "./components/AddTime.svelte";
+    import { hideTarget, playSound } from "./stores/settings-store";
 
     const dispatch = createEventDispatcher();
 
@@ -77,7 +78,7 @@
         dispatch("newDuration", { id, duration });
 
         // play audio when @ 100%
-        if (target === duration) {
+        if (target === duration && $playSound) {
             if (audio) audio.play();
         }
     }
@@ -142,10 +143,12 @@
         </div>
 
         <!-- TARGET -->
-        <div class={`${target === 0 ? "opacity-30" : ""}`}>
-            <Icon data={faCrosshairs} />
-            {@html targetStyled}
-        </div>
+        {#if !$hideTarget}
+            <div class={`${target === 0 ? "opacity-30" : ""}`}>
+                <Icon data={faCrosshairs} />
+                {@html targetStyled}
+            </div>
+        {/if}
 
         <!-- TIMER -->
         <div class=" items-baseline">

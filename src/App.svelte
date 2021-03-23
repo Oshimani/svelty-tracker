@@ -9,6 +9,7 @@
 
 	import Tracker from "./Tracker.svelte";
 	import Form from "./components/Form.svelte";
+	import Menu from "./components/Menu.svelte";
 
 	let trackers: any[] = [];
 
@@ -116,7 +117,7 @@
 	<!-- HEADROW -->
 	<div class="fixed z-10 w-full top-0 left-0 px-2 py-1">
 		<header
-			class="items-baseline px-4 py-2 uppercase bg-blue-600 text-white rounded flex flex-row justify-between bg-gradient-to-r dark:from-purple-600 dark:via-red-500 dark:to-yellow-400"
+			class="items-baseline px-4 py-2 uppercase bg-blue-600 text-gray-50 rounded flex flex-row justify-between bg-gradient-to-r dark:from-purple-600 dark:via-red-500 dark:to-yellow-400"
 		>
 			<div>
 				Active trackings {trackers.length}
@@ -126,11 +127,15 @@
 				{@html sumStyled}
 			</span>
 
-			<button
-				on:click={() => stopTheCount()}
-				class={`btn bg-red-500 hover:bg-red-400 uppercase border-none`}
-				><Icon data={faCoffee} /> Stop the Count</button
-			>
+			<!-- BUTTONS -->
+			<div>
+				<button
+					on:click={() => stopTheCount()}
+					class={`btn bg-red-500 hover:bg-red-400 uppercase border-none`}
+					><Icon data={faCoffee} /> Stop the Count</button
+				>
+				<Menu />
+			</div>
 		</header>
 	</div>
 

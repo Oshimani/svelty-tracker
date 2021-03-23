@@ -1,12 +1,12 @@
 <script lang="ts">
     import { fade, fly } from "svelte/transition";
+    import { backInOut } from "svelte/easing";
     import { faPlus } from "@fortawesome/free-solid-svg-icons";
     import Icon from "svelte-awesome";
 
     import type { ITracker } from "../models/ITracker";
 
     import NumberInput from "./NumberInput.svelte";
-    import { backInOut } from "svelte/easing";
 
     export let submit: (newTracker: ITracker) => void;
     export let checkID: (id: string) => boolean;
