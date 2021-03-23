@@ -4,6 +4,7 @@
 - store data on server for sync (Firebase)
 - play alert sound when target is reached
 - custom alert function, inline with target modal
+- add impressum
 
 ---
 

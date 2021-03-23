@@ -183,7 +183,7 @@
             <div
                 transition:scale
                 style={`width: ${precentUsed}%`}
-                class:hidden={target === 0}
+                class:hidden={!target}
                 class="prog-bar h-1 bg-blue-600 bg-gradient-to-r dark:from-purple-600 dark:via-red-500 dark:to-yellow-400"
             />
         </div>
