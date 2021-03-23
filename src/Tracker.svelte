@@ -117,8 +117,9 @@
             {#if active}
                 <span class="relative flex h-4 w-4">
                     <span
-                        class:hidden={!showAnimation}
-                        class="absolute animate-ping inline-flex h-full w-full rounded-full bg-red-500 opacity-75"
+                        class={`${
+                            !showAnimation ? "hidden" : ""
+                        } absolute animate-ping inline-flex h-full w-full rounded-full bg-red-500 opacity-75`}
                     />
                     <span
                         class="relative inline-flex rounded-full h-4 w-4 bg-red-600"
@@ -183,8 +184,9 @@
             <div
                 transition:scale
                 style={`width: ${precentUsed}%`}
-                class:hidden={!target}
-                class="prog-bar h-1 bg-blue-600 bg-gradient-to-r dark:from-purple-600 dark:via-red-500 dark:to-yellow-400"
+                class={`${
+                    target ? "" : "hidden"
+                } prog-bar h-1 bg-blue-600 bg-gradient-to-r dark:from-purple-600 dark:via-red-500 dark:to-yellow-400`}
             />
         </div>
     </div>

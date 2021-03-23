@@ -161,8 +161,6 @@
 	</div>
 </main>
 
-<div class="includeStuff"></div>
-
 <style>
 	:global(*) {
 		outline: none !important;
@@ -204,9 +202,5 @@
 		@apply px-4 py-1 rounded-2xl shadow-inner;
 		/* general dark */
 		@apply dark:bg-gray-600 dark:border-gray-600 dark:text-gray-100;
-	}
-
-	.includeStuff{
-		@apply hidden;
 	}
 </style>
