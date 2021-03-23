@@ -37,6 +37,8 @@
     let inputValue: string = "";
 
     let unsubscribe;
+    let audio;
+
     onMount(() => {
         inputValue = name;
         unsubscribe = tick.subscribe((_) => {
@@ -45,11 +47,13 @@
 
         if (active) start();
     });
+
     onDestroy(() => unsubscribe());
 
     function formatDate(value: number) {
         return new Date(value * 1000).toISOString().substr(11, 8);
     }
+
     function styleDate(value: string) {
         return `<strong>${value.substr(0, 5)}</strong>:${value.substr(6, 2)}`;
     }
@@ -71,6 +75,11 @@
     function intervalFunction() {
         duration++;
         dispatch("newDuration", { id, duration });
+
+        // play audio when @ 100%
+        if (target === duration) {
+            if (audio) audio.play();
+        }
     }
 
     function addTime(amount: number) {
@@ -133,7 +142,7 @@
         </div>
 
         <!-- TARGET -->
-        <div>
+        <div class={`${target === 0 ? "opacity-30" : ""}`}>
             <Icon data={faCrosshairs} />
             {@html targetStyled}
         </div>
@@ -143,6 +152,8 @@
             <Icon data={faHourglass} />
             {@html durationStyled}
         </div>
+
+        <!-- TIMER BUTTONS -->
         <div class="flex flex-row items-baseline gap-1">
             <AddTime
                 {duration}
@@ -190,6 +201,8 @@
             />
         </div>
     </div>
+
+    <audio bind:this={audio} src="assets/audio/alert.mp3" />
 </li>
 
 <style>
