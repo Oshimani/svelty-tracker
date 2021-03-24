@@ -67,16 +67,16 @@
 </script>
 
 <form
-    class="bg-gray-300 dark:bg-gray-800 rounded-2xl px-4 py-2 shadow"
+    class="bg-gray-300 dark:bg-gray-800 rounded-2xl px-4 py-2 shadow flex flex-row gap-1"
     on:submit|preventDefault={() => saveName()}
 >
     <input
-        class="input"
+        class="input flex-grow"
         placeholder="title for new tracker"
         type="text"
         bind:value={name}
     />
-    <button disabled={!name} class={`btn secondary-btn ml-1`} type="submit"
+    <button disabled={!name} class={`btn secondary-btn`} type="submit"
         ><Icon data={faPlus} /></button
     >
 </form>
