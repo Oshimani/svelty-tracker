@@ -111,53 +111,58 @@
 
 <li class="py-2" transition:fly={{ y: -100, duration: 400, easing: backInOut }}>
     <div
-        class:rounded-b-none={target > 0}
-        class="px-4 py-2 bg-gray-50 dark:bg-gray-800 dark:text-gray-100 flex flex-row shadow-md rounded gap-4 justify-between items-center"
+        class={`${
+            target > 0 ? "rounded-b-none" : ""
+        } flex-wrap px-4 py-2 bg-gray-50 dark:bg-gray-800 dark:text-gray-100 flex flex-row gap-4 shadow-md rounded justify-between items-center`}
     >
-        <!-- NAME -->
-        <input
-            class={`input flex-grow overflow-hidden`}
-            type="text"
-            bind:value={inputValue}
-            on:change={() => handleNameChanged()}
-        />
+        <section class="flex flex-row gap-4 flex-grow">
+            <!-- NAME -->
+            <input
+                class={`input flex-grow overflow-hidden`}
+                type="text"
+                bind:value={inputValue}
+                on:change={() => handleNameChanged()}
+            />
 
-        <!-- RECORDING -->
-        <div class="flex flex-col justify-center">
-            {#if active}
-                <span class="relative flex h-4 w-4">
+            <!-- RECORDING -->
+            <div class="flex flex-col justify-center">
+                {#if active}
+                    <span class="relative flex h-4 w-4">
+                        <span
+                            class={`${
+                                !showAnimation ? "hidden" : ""
+                            } absolute animate-ping inline-flex h-full w-full rounded-full bg-red-500 opacity-75`}
+                        />
+                        <span
+                            class="relative inline-flex rounded-full h-4 w-4 bg-red-600"
+                        />
+                    </span>
+                {:else}
                     <span
-                        class={`${
-                            !showAnimation ? "hidden" : ""
-                        } absolute animate-ping inline-flex h-full w-full rounded-full bg-red-500 opacity-75`}
+                        class="relative inline-flex rounded-full h-4 w-4 bg-red-800 opacity-40"
                     />
-                    <span
-                        class="relative inline-flex rounded-full h-4 w-4 bg-red-600"
-                    />
-                </span>
-            {:else}
-                <span
-                    class="relative inline-flex rounded-full h-4 w-4 bg-red-800 opacity-40"
-                />
-            {/if}
-        </div>
-
-        <!-- TARGET -->
-        {#if !$hideTarget}
-            <div class={`${target === 0 ? "opacity-30" : ""}`}>
-                <Icon data={faCrosshairs} />
-                {@html targetStyled}
+                {/if}
             </div>
-        {/if}
+        </section>
 
-        <!-- TIMER -->
-        <div class={`${duration === 0 ? "opacity-30" : ""}`}>
-            <Icon data={faHourglass} />
-            {@html durationStyled}
-        </div>
+        <section class="flex flex-row gap-4 justify-evenly w-full md:w-auto">
+            <!-- TARGET -->
+            {#if !$hideTarget}
+                <div class={`${target === 0 ? "opacity-30" : ""}`}>
+                    <Icon data={faCrosshairs} />
+                    {@html targetStyled}
+                </div>
+            {/if}
+
+            <!-- TIMER -->
+            <div class={`${duration === 0 ? "opacity-30" : ""}`}>
+                <Icon data={faHourglass} />
+                {@html durationStyled}
+            </div>
+        </section>
 
         <!-- TIMER BUTTONS -->
-        <div class="flex flex-row items-baseline gap-1">
+        <div class="flex flex-row items-baseline gap-1 justify-evenly w-full md:w-auto">
             <AddTime
                 {duration}
                 on:timeChange={(e) => addTime(e.detail.value)}
@@ -171,7 +176,7 @@
         </div>
 
         <!-- BUTTONS -->
-        <div class="">
+        <div class="flex flex-row gap-1 justify-evenly w-full md:w-auto">
             <button
                 disabled={active}
                 on:click={() => handleStartClick()}

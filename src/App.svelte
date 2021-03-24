@@ -119,7 +119,7 @@
 		<header
 			class="items-baseline px-4 py-2 uppercase bg-blue-600 text-gray-50 rounded flex flex-row justify-between bg-gradient-to-r dark:from-purple-600 dark:via-red-500 dark:to-yellow-400"
 		>
-			<div>
+			<div class="hidden md:block">
 				Active trackings {trackers.length}
 			</div>
 
@@ -132,7 +132,9 @@
 				<button
 					on:click={() => stopTheCount()}
 					class={`btn bg-red-500 hover:bg-red-400 uppercase border-none`}
-					><Icon data={faCoffee} /> Stop the Count</button
+					><Icon data={faCoffee} /><span
+						class={`ml-1 hidden md:inline`}>Stop the Count</span
+					></button
 				>
 				<Menu />
 			</div>
