@@ -151,7 +151,7 @@
         {/if}
 
         <!-- TIMER -->
-        <div class=" items-baseline">
+        <div class={`${duration === 0 ? "opacity-30" : ""}`}>
             <Icon data={faHourglass} />
             {@html durationStyled}
         </div>
