@@ -1,10 +1,12 @@
 # Todos
 - ✔️ Config menu (toggle targeted mode)
 - export/import (customizable CSV)
+	- round to next +-15 minutes
 - store data on server for sync (Firebase)
 - ✔️ play alert sound when target is reached 
 - custom alert function, inline with target modal
 - add impressum
+- allow drag & drop reordering of trackers
 
 ---
 
