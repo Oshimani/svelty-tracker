@@ -62,8 +62,6 @@
                 break;
         }
     }
-
-    // STYLES
 </script>
 
 <form
@@ -76,8 +74,10 @@
         type="text"
         bind:value={name}
     />
-    <button disabled={!name} class={`btn secondary-btn`} type="submit"
-        ><Icon data={faPlus} /></button
+    <button
+        disabled={!name}
+        class={`btn secondary-btn`}
+        type="submit"><Icon data={faPlus} /></button
     >
 </form>
 
@@ -93,11 +93,13 @@
     <!-- MODAL -->
     <div
         transition:fly={{ y: -800, duration: 400, easing: backInOut }}
-        class="app-modal fixed bg-gray-50 dark:text-gray-100  dark:bg-gray-800 shadow-md rounded-2xl flex flex-col gap-4"
+        class="app-modal fixed bg-gray-50 dark:text-gray-100 dark:bg-gray-800 shadow-md rounded-2xl flex flex-col gap-4"
     >
         <header class="">
             <h1 class=" text-center px-12 pt-4">Set target duration</h1>
-            <p class="text-sm text-center text-gray-600">(leave at 0 for no target duration)</p>
+            <p class="text-sm text-center text-gray-600">
+                (leave at 0 for no target duration)
+            </p>
             <div
                 class="w-full h-1 bg-blue-600 bg-gradient-to-r dark:from-purple-600 dark:via-red-500 dark:to-yellow-400"
             />
@@ -145,5 +147,11 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+    }
+    form input {
+        @apply rounded-r-none;
+    }
+    form button {
+        @apply rounded-l-none;
     }
 </style>
