@@ -26,6 +26,8 @@
     export let target: number = 0;
     export let active: boolean = false;
 
+    export let draggable: boolean;
+
     $: durationFormatted = formatDate(duration);
     $: durationStyled = styleDate(durationFormatted);
 
@@ -107,9 +109,26 @@
     function handleNameChanged() {
         dispatch("nameChange", { name: inputValue, id });
     }
+
+    function handleDragStart(event) {
+        dispatch("dragstart", { event });
+    }
+
+    function handleDrop(event) {
+        console.log("DROP IN TRACKER");
+
+        dispatch("drop", { event });
+    }
 </script>
 
-<li class="py-2" transition:fly={{ y: -100, duration: 400, easing: backInOut }}>
+<li
+    {draggable}
+    on:dragstart={(e) => handleDragStart(e)}
+    on:dragover|preventDefault={() =>{ return false}}
+    on:drop|preventDefault={(e) => handleDrop(e)}
+    class="py-2"
+    transition:fly={{ y: -100, duration: 400, easing: backInOut }}
+>
     <div
         class={`${
             target > 0 ? "rounded-b-none" : ""
@@ -162,7 +181,9 @@
         </section>
 
         <!-- TIMER BUTTONS -->
-        <div class="flex flex-row items-baseline gap-1 justify-evenly w-full md:w-auto">
+        <div
+            class="flex flex-row items-baseline gap-1 justify-evenly w-full md:w-auto"
+        >
             <AddTime
                 {duration}
                 on:timeChange={(e) => addTime(e.detail.value)}

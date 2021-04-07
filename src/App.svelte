@@ -1,5 +1,9 @@
 <script lang="ts">
+	//#region IMPORTS
 	import { onMount } from "svelte";
+	import { flip } from "svelte/animate";
+	import { backInOut } from "svelte/easing";
+
 	import { faCoffee } from "@fortawesome/free-solid-svg-icons";
 	import Icon from "svelte-awesome";
 
@@ -10,8 +14,9 @@
 	import Tracker from "./Tracker.svelte";
 	import Form from "./components/Form.svelte";
 	import Menu from "./components/Menu.svelte";
+	//#endregion
 
-	let trackers: any[] = [];
+	let trackers: ITracker[] = [];
 
 	$: sum = trackers.reduce((acc, tracker) => acc + tracker.duration, 0);
 	$: sumFormatted = new Date(sum * 1000).toISOString().substr(11, 8);
@@ -22,6 +27,7 @@
 	$: isAnyTrackerActive = trackers.findIndex((t) => t.active) > -1;
 	$: activeIcon = isAnyTrackerActive ? "🔴" : "⏸️";
 
+	//#region TRACKING
 	function stopTheCount(id?: string) {
 		trackers = [
 			...trackers.map((t) => {
@@ -78,7 +84,9 @@
 		}
 		backup();
 	}
+	//#endregion
 
+	//#region BACKUP
 	function backup() {
 		localStorage.setItem(
 			"backup",
@@ -95,6 +103,31 @@
 				return { ...t, active: false };
 			});
 		}
+	}
+	//#endregion
+
+	function handleDragStart(event, sourceIndex: number) {
+		console.log("DRAG", event);
+		event.dataTransfer.effectAllowed = "move";
+		event.dataTransfer.dropEffect = "move";
+		event.dataTransfer.setData("trackerId", sourceIndex);
+	}
+
+	function handleDrop(event, targetIndex: number) {
+		console.log("DROP", event);
+		event.dataTransfer.dropEffect = "move";
+		const sourceIndex = Number(event.dataTransfer.getData("trackerId"));
+
+		const newTrackers = trackers;
+
+		if (sourceIndex < targetIndex) {
+			newTrackers.splice(targetIndex + 1, 0, newTrackers[sourceIndex]);
+			newTrackers.splice(sourceIndex, 1);
+		} else {
+			newTrackers.splice(targetIndex, 0, newTrackers[sourceIndex]);
+			newTrackers.splice(sourceIndex + 1, 1);
+		}
+		trackers = newTrackers;
 	}
 
 	onMount(() => {
@@ -145,14 +178,20 @@
 	<section class="pt-16 pb-14">
 		<!-- TRACKER LIST -->
 		<ul>
-			{#each trackers as tracker (tracker.id)}
-				<Tracker
-					{...tracker}
-					on:delete={(e) => handleDelete(e.detail)}
-					on:start={(e) => handleStartTracking(e.detail.id)}
-					on:newDuration={(e) => handleNewDuration(e.detail)}
-					on:nameChange={(e) => handleNameChanged(e.detail)}
-				/>
+			{#each trackers as tracker, index (tracker.id)}
+				<div animate:flip={{ easing: backInOut, duration: 400 }}>
+					<Tracker
+						{...tracker}
+						draggable={true}
+						on:delete={(e) => handleDelete(e.detail)}
+						on:start={(e) => handleStartTracking(e.detail.id)}
+						on:newDuration={(e) => handleNewDuration(e.detail)}
+						on:nameChange={(e) => handleNameChanged(e.detail)}
+						on:dragstart={(e) =>
+							handleDragStart(e.detail.event, index)}
+						on:drop={(e) => handleDrop(e.detail.event, index)}
+					/>
+				</div>
 			{/each}
 		</ul>
 	</section>
@@ -168,7 +207,7 @@
 	</div>
 </main>
 
-<style>
+<!-- <style>
 	:global(*) {
 		outline: none !important;
 	}
@@ -210,4 +249,4 @@
 		/* general dark */
 		@apply dark:bg-gray-600 dark:border-gray-600 dark:text-gray-100;
 	}
-</style>
+</style> -->
