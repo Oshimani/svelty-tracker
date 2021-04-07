@@ -207,7 +207,7 @@
 	</div>
 </main>
 
-<!-- <style>
+<style>
 	:global(*) {
 		outline: none !important;
 	}
@@ -249,4 +249,4 @@
 		/* general dark */
 		@apply dark:bg-gray-600 dark:border-gray-600 dark:text-gray-100;
 	}
-</style> -->
+</style>
