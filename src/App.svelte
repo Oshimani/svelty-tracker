@@ -55,7 +55,6 @@
 
 	function handleDelete(deleteDetail: any) {
 		const { id } = deleteDetail;
-		console.log(id);
 
 		trackers = trackers.filter((t) => t.id !== id);
 		backup();
@@ -107,14 +106,12 @@
 	//#endregion
 
 	function handleDragStart(event, sourceIndex: number) {
-		console.log("DRAG", event);
 		event.dataTransfer.effectAllowed = "move";
 		event.dataTransfer.dropEffect = "move";
 		event.dataTransfer.setData("trackerId", sourceIndex);
 	}
 
 	function handleDrop(event, targetIndex: number) {
-		console.log("DROP", event);
 		event.dataTransfer.dropEffect = "move";
 		const sourceIndex = Number(event.dataTransfer.getData("trackerId"));
 

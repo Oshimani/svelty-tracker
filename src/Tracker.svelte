@@ -115,8 +115,6 @@
     }
 
     function handleDrop(event) {
-        console.log("DROP IN TRACKER");
-
         dispatch("drop", { event });
     }
 </script>

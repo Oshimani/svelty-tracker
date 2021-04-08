@@ -21,8 +21,6 @@
     $: target = targetHours + targetMinutes;
 
     function saveName() {
-        console.log("ID is free", !checkID(name));
-
         if (!checkID(name)) {
             // cancel here
             alert(`Name: ${name} alsready in list, name has to be unique.`);
@@ -53,8 +51,6 @@
     }
 
     function handleDurationChange(value: number, unit: string) {
-        console.log(value);
-
         switch (unit) {
             case "hours":
                 targetHours = value;
