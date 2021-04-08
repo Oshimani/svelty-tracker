@@ -8,6 +8,9 @@
 - add impressum
 - allow drag & drop reordering of trackers
 
+
+# Fixes
+- ✔️ Timer wont reset propperly in target form
 ---
 
 *Looking for a shareable component template? Go here --> [sveltejs/component-template](https://github.com/sveltejs/component-template)*

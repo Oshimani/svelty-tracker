@@ -44,8 +44,12 @@
             target,
             active: true,
         } as ITracker);
+
+        // reset form
         name = "";
         showModal = false;
+        targetHours = 0;
+        targetMinutes = 0;
     }
 
     function handleDurationChange(value: number, unit: string) {
@@ -74,10 +78,8 @@
         type="text"
         bind:value={name}
     />
-    <button
-        disabled={!name}
-        class={`btn secondary-btn`}
-        type="submit"><Icon data={faPlus} /></button
+    <button disabled={!name} class={`btn secondary-btn`} type="submit"
+        ><Icon data={faPlus} /></button
     >
 </form>
 

@@ -2,7 +2,7 @@
     import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
     import Icon from "svelte-awesome";
 
-    import { createEventDispatcher } from "svelte";
+    import { createEventDispatcher, onDestroy, onMount } from "svelte";
 
     const dispatch = createEventDispatcher();
     export let unit: string;
@@ -29,11 +29,19 @@
     function onChange() {
         dispatch("change", { duration: durationInSeconds() });
     }
+
+    onMount(() => {
+        console.log("Numberinput mounted", duration);
+    });
+
+    onDestroy(() => {
+        console.log("Numberinput was destroyed");
+    });
 </script>
 
 <div class="flex flex-col gap-2">
     <p class="text-xs text-center dark:text-gray-100 lowercase">
-        {unit}
+        {unit} {durationInSeconds()}
     </p>
 
     <button
