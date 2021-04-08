@@ -23,9 +23,6 @@ jobs:
     # - run: npm test
       - run: ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
 
-  export-build:
-    runs-on: ubuntu-latest
-    steps:
       - uses: actions/upload-artifact@v2
         with:
           name: public
