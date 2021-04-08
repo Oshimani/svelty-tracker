@@ -6,11 +6,13 @@
 - ✔️ play alert sound when target is reached 
 - custom alert function, inline with target modal
 - add impressum
-- allow drag & drop reordering of trackers
-
+- ✔️ allow drag & drop reordering of trackers
+	- visual improvements and UX
+- allow grouping of trackers
 
 # Fixes
 - ✔️ Timer wont reset propperly in target form
+
 ---
 
 *Looking for a shareable component template? Go here --> [sveltejs/component-template](https://github.com/sveltejs/component-template)*
