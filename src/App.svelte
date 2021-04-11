@@ -11,7 +11,7 @@
 
 	import { tick } from "./store";
 
-	import Tracker from "./Tracker.svelte";
+	import Tracker from "./components/Tracker.svelte";
 	import Form from "./components/Form.svelte";
 	import Menu from "./components/Menu.svelte";
 	//#endregion
@@ -105,6 +105,7 @@
 	}
 	//#endregion
 
+	//#region DRAG & DROP
 	function handleDragStart(event, sourceIndex: number) {
 		event.dataTransfer.effectAllowed = "move";
 		event.dataTransfer.dropEffect = "move";
@@ -126,6 +127,7 @@
 		}
 		trackers = newTrackers;
 	}
+	//#endregion
 
 	onMount(() => {
 		setInterval(() => {
