@@ -14,9 +14,9 @@
         faCrosshairs,
     } from "@fortawesome/free-solid-svg-icons";
 
-    import { tick } from "../store";
-    import AddTime from "./AddTime.svelte";
-    import { hideTarget, playSound } from "../stores/settings-store";
+    import { tick } from "./store";
+    import AddTime from "./components/AddTime.svelte";
+    import { hideTarget, playSound } from "./stores/settings-store";
 
     const dispatch = createEventDispatcher();
 

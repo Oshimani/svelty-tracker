@@ -12,7 +12,7 @@
 
 	import { tick } from "./store";
 
-	import TrackerGroup from "./components/TrackerGroup.svelte";
+	import Tracker from "./Tracker.svelte";
 	import Form from "./components/Form.svelte";
 	import Menu from "./components/Menu.svelte";
 	//#endregion
@@ -43,8 +43,26 @@
 	// }
 	//#endregion
 
-	function handleSubmitNewGroup(){
-		
+	function handleDragStart(event, sourceIndex: number) {
+		event.dataTransfer.effectAllowed = "move";
+		event.dataTransfer.dropEffect = "move";
+		event.dataTransfer.setData("trackerId", sourceIndex);
+	}
+
+	function handleDrop(event, targetIndex: number) {
+		event.dataTransfer.dropEffect = "move";
+		const sourceIndex = Number(event.dataTransfer.getData("trackerId"));
+
+		const newTrackers = trackers;
+
+		if (sourceIndex < targetIndex) {
+			newTrackers.splice(targetIndex + 1, 0, newTrackers[sourceIndex]);
+			newTrackers.splice(sourceIndex, 1);
+		} else {
+			newTrackers.splice(targetIndex, 0, newTrackers[sourceIndex]);
+			newTrackers.splice(sourceIndex + 1, 1);
+		}
+		trackers = newTrackers;
 	}
 
 	onMount(() => {
