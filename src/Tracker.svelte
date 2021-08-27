@@ -122,7 +122,9 @@
 <li
     {draggable}
     on:dragstart={(e) => handleDragStart(e)}
-    on:dragover|preventDefault={() =>{ return false}}
+    on:dragover|preventDefault={() => {
+        return false;
+    }}
     on:drop|preventDefault={(e) => handleDrop(e)}
     class="py-2"
     transition:fly={{ y: -100, duration: 400, easing: backInOut }}
@@ -165,15 +167,19 @@
         <section class="flex flex-row gap-4 justify-evenly w-full md:w-auto">
             <!-- TARGET -->
             {#if !$hideTarget}
-                <div class={`${target === 0 ? "opacity-30" : ""}`}>
-                    <Icon data={faCrosshairs} />
+                <div class={`${target === 0 ? "opacity-30" : ""} flex flex-row gap-1`}>
+                    <div class="flex items-center">
+                        <Icon data={faCrosshairs} />
+                    </div>
                     {@html targetStyled}
                 </div>
             {/if}
 
             <!-- TIMER -->
-            <div class={`${duration === 0 ? "opacity-30" : ""}`}>
-                <Icon data={faHourglass} />
+            <div class={`${duration === 0 ? "opacity-30" : ""} flex flex-row gap-1`}>
+                <div class={`${active ? "spin" : ""} flex items-center`}>
+                    <Icon data={faHourglass} />
+                </div>
                 {@html durationStyled}
             </div>
         </section>
@@ -238,5 +244,23 @@
         -moz-transition: width 1s linear;
         -o-transition: width 1s linear;
         transition: width 1s linear;
+    }
+    .spin {
+        animation-name: spin;
+        animation-duration: 2000ms;
+        animation-iteration-count: infinite;
+        /* display: inline-flex; */
+        /* transform-origin: center; */
+    }
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        50% {
+            transform: rotate(180deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
     }
 </style>
