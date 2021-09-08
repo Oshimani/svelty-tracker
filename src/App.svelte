@@ -3,20 +3,22 @@
 	import { onMount } from "svelte";
 	import { flip } from "svelte/animate";
 	import { backInOut } from "svelte/easing";
-
+	
 	import { faCoffee } from "@fortawesome/free-solid-svg-icons";
 	import Icon from "svelte-awesome";
 
 	import type { ITracker } from "./models/ITracker";
+	import type { ITrackerGroup } from "./models/ITrackerGroup";
 
 	import { tick } from "./store";
 
-	import Tracker from "./Tracker.svelte";
+	import Tracker from "./components/Tracker.svelte";
 	import Form from "./components/Form.svelte";
 	import Menu from "./components/Menu.svelte";
+	import TrackerGroup from "./components/TrackerGroup.svelte";
 	//#endregion
 
-	let trackers: ITracker[] = [];
+	let trackers: (ITracker | ITrackerGroup)[] = [];
 
 	$: sum = trackers.reduce((acc, tracker) => acc + tracker.duration, 0);
 	$: sumFormatted = new Date(sum * 1000).toISOString().substr(11, 8);
@@ -175,22 +177,28 @@
 	<section class="pt-16 pb-14">
 		<!-- TRACKER LIST -->
 		<ul>
-			{#each trackers as tracker, index (tracker.id)}
+			{#each trackers as trackingUnit, index (trackingUnit.id)}
 				<div animate:flip={{ easing: backInOut, duration: 400 }}>
-					<Tracker
-						{...tracker}
-						draggable={true}
-						on:delete={(e) => handleDelete(e.detail)}
-						on:start={(e) => handleStartTracking(e.detail.id)}
-						on:newDuration={(e) => handleNewDuration(e.detail)}
-						on:nameChange={(e) => handleNameChanged(e.detail)}
-						on:dragstart={(e) =>
-							handleDragStart(e.detail.event, index)}
-						on:drop={(e) => handleDrop(e.detail.event, index)}
-					/>
+					{#if trackingUnit.hasOwnProperty("trackers")}
+						<!-- TRACKER GROUP -->
+					{:else}
+						<!-- TRACKER -->
+						<Tracker
+							{...trackingUnit}
+							draggable={true}
+							on:delete={(e) => handleDelete(e.detail)}
+							on:start={(e) => handleStartTracking(e.detail.id)}
+							on:newDuration={(e) => handleNewDuration(e.detail)}
+							on:nameChange={(e) => handleNameChanged(e.detail)}
+							on:dragstart={(e) =>
+								handleDragStart(e.detail.event, index)}
+							on:drop={(e) => handleDrop(e.detail.event, index)}
+						/>
+					{/if}
 				</div>
 			{/each}
 		</ul>
+		<TrackerGroup />
 	</section>
 
 	<div
