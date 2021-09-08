@@ -5,9 +5,17 @@
     import { backInOut } from "svelte/easing";
 
     import Icon from "svelte-awesome";
-    import { faUndo, faTrash } from "@fortawesome/free-solid-svg-icons";
-
+    import {
+        faHourglass,
+        faPlayCircle,
+    } from "@fortawesome/free-regular-svg-icons";
+    import {
+        faUndo,
+        faTrash,
+        faCrosshairs,
+    } from "@fortawesome/free-solid-svg-icons";
     import type { ITracker } from "../models/ITracker";
+    import { hideTarget } from "../stores/settings-store";
 
     import Tracker from "./Tracker.svelte";
 
@@ -22,7 +30,23 @@
 
     export let draggable: boolean;
 
+    $: durationFormatted = formatDate(duration);
+    $: durationStyled = styleDate(durationFormatted);
+
+    $: targetFormatted = formatDate(target);
+    $: targetStyled = styleDate(targetFormatted);
+    $: precentUsed =
+        (duration / target) * 100 <= 100 ? (duration / target) * 100 : 100;
+
     let inputValue: string = "";
+
+    function formatDate(value: number) {
+        return new Date(value * 1000).toISOString().substr(11, 8);
+    }
+
+    function styleDate(value: string) {
+        return `<strong>${value.substr(0, 5)}</strong>:${value.substr(6, 2)}`;
+    }
 
     onMount(() => {
         inputValue = name;
@@ -129,6 +153,35 @@
             bind:value={inputValue}
             on:change={() => dispatch("nameChange", { name: inputValue, id })}
         />
+
+        <section class="flex flex-row gap-4 justify-evenly w-full md:w-auto">
+            <!-- TARGET -->
+            {#if !$hideTarget}
+                <div
+                    class={`${
+                        target === 0 ? "opacity-30" : ""
+                    } flex flex-row gap-1`}
+                >
+                    <div class="flex items-center">
+                        <Icon data={faCrosshairs} />
+                    </div>
+                    {@html targetStyled}
+                </div>
+            {/if}
+
+            <!-- TIMER -->
+            <div
+                class={`${
+                    duration === 0 ? "opacity-30" : ""
+                } flex flex-row gap-1`}
+            >
+                <div class={`${active ? "spin" : ""} flex items-center`}>
+                    <Icon data={faHourglass} />
+                </div>
+                {@html durationStyled}
+            </div>
+        </section>
+
         <!-- BUTTONS -->
         <div class="flex flex-row gap-1 justify-evenly w-full md:w-auto">
             <button disabled class={`btn secondary-btn`} on:click={() => false}
