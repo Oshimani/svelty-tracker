@@ -34,7 +34,7 @@
 <div class="flex flex-col gap-2">
     <p class="text-xs text-center dark:text-gray-100 lowercase">
         {unit}
-        {durationInSeconds()}
+        {duration}
     </p>
 
     <button
