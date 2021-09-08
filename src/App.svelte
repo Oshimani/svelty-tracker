@@ -3,7 +3,7 @@
 	import { onMount } from "svelte";
 	import { flip } from "svelte/animate";
 	import { backInOut } from "svelte/easing";
-	
+
 	import { faCoffee } from "@fortawesome/free-solid-svg-icons";
 	import Icon from "svelte-awesome";
 
@@ -64,6 +64,7 @@
 
 	function handleSubmit(newTracker: ITracker) {
 		trackers = [newTracker, ...trackers];
+		backup();
 	}
 
 	function isIdFree(id: string): boolean {
@@ -181,6 +182,12 @@
 				<div animate:flip={{ easing: backInOut, duration: 400 }}>
 					{#if trackingUnit.hasOwnProperty("trackers")}
 						<!-- TRACKER GROUP -->
+						<TrackerGroup
+							{...trackingUnit}
+							draggable={true}
+							on:nameChange={(e) => handleNameChanged(e.detail)}
+							on:delete={(e) => handleDelete(e.detail)}
+						/>
 					{:else}
 						<!-- TRACKER -->
 						<Tracker
@@ -198,12 +205,9 @@
 				</div>
 			{/each}
 		</ul>
-		<TrackerGroup />
 	</section>
 
-	<div
-		class="fixed bottom-0 left-0 w-full px-8 py-4 flex flex-row justify-between items-end"
-	>
+	<div class="fixed bottom-0 left-0 w-full px-8 py-4">
 		<!-- NEW FORM -->
 		<Form
 			submit={(newTracker) => handleSubmit(newTracker)}

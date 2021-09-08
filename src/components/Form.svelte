@@ -7,6 +7,7 @@
     import type { ITracker } from "../models/ITracker";
 
     import NumberInput from "./NumberInput.svelte";
+    import type { ITrackerGroup } from "../models/ITrackerGroup";
 
     export let submit: (newTracker: ITracker) => void;
     export let checkID: (id: string) => boolean;
@@ -34,7 +35,7 @@
         }, 10);
     }
 
-    function handleSubmit() {
+    function handleSubmitTracker() {
         submit({
             name,
             id: name,
@@ -43,7 +44,22 @@
             active: true,
         } as ITracker);
 
-        // reset form
+        resetForm();
+    }
+
+    function handleSubmitGroup() {
+        submit({
+            name,
+            id: name,
+            duration: 0,
+            target,
+            active: true,
+            trackers: [],
+        } as ITrackerGroup);
+        resetForm();
+    }
+
+    function resetForm() {
         name = "";
         showModal = false;
         targetHours = 0;
@@ -70,7 +86,7 @@
 >
     <input
         class="input flex-grow"
-        placeholder="title for new tracker"
+        placeholder="title for new tracker or tracking group"
         type="text"
         bind:value={name}
     />
@@ -132,8 +148,12 @@
                 >
                 <button
                     bind:this={submitButton}
-                    on:click={() => handleSubmit()}
-                    class={`btn secondary-btn`}>Submit</button
+                    on:click={() => handleSubmitTracker()}
+                    class={`btn secondary-btn`}>Create Tracker</button
+                >
+                <button
+                    on:click={() => handleSubmitGroup()}
+                    class={`btn secondary-btn`}>Create Group</button
                 >
             </div>
         </footer>

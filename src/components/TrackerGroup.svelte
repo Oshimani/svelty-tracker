@@ -1,104 +1,157 @@
 <script lang="ts">
-	import { flip } from "svelte/animate";
-	import { backInOut } from "svelte/easing";
-	
+    import { createEventDispatcher, onMount } from "svelte";
+    import { fly, scale } from "svelte/transition";
+    import { flip } from "svelte/animate";
+    import { backInOut } from "svelte/easing";
+
+    import Icon from "svelte-awesome";
+    import { faUndo, faTrash } from "@fortawesome/free-solid-svg-icons";
+
     import type { ITracker } from "../models/ITracker";
-	
+
     import Tracker from "./Tracker.svelte";
-	
-    let trackers: ITracker[] = [];
-	
-    //#region TRACKING
+
+    const dispatch = createEventDispatcher();
+
+    export let trackers: ITracker[] = [];
+    export let id: string;
+    export let name: string;
+    export let duration: number = 0;
+    export let target: number = 0;
+    export let active: boolean = false;
+
+    export let draggable: boolean;
+
+    let inputValue: string = "";
+
+    onMount(() => {
+        inputValue = name;
+    });
+
+    //#region TRACKER GROUP FUNCTIONS
     function stopTheCount(id?: string) {
-		trackers = [
-			...trackers.map((t) => {
-				if (t.id === id) {
-					return { ...t, active: true };
-				}
-				return {
-					...t,
-					active: false,
-				};
-			}),
-		];
-	}
+        trackers = [
+            ...trackers.map((t) => {
+                if (t.id === id) {
+                    return { ...t, active: true };
+                }
+                return {
+                    ...t,
+                    active: false,
+                };
+            }),
+        ];
+        // todo: stop other TGs count
+    }
+    function handleDeleteClick() {
+        if (confirm(`Delete ${name}?`)) {
+            dispatch("delete", { id });
+        }
+    }
+    //#endregion
 
-    function handleStartTracking(id: string) {
-		// stop all
-		stopTheCount();
-		// restart current
-		const i = trackers.findIndex((t) => t.id === id);
-		if (i > -1) {
-			trackers[i].active = true;
-		}
-		trackers = [...trackers];
-	}
+    //#region TRACKER FUNCTIONS
+    function handleTrackerStartTracking(id: string) {
+        // stop all
+        stopTheCount();
+        // restart current
+        const i = trackers.findIndex((t) => t.id === id);
+        if (i > -1) {
+            trackers[i].active = true;
+        }
+        trackers = [...trackers];
+    }
 
-	function handleDelete(deleteDetail: any) {
-		const { id } = deleteDetail;
+    function handleTrackerDelete(deleteDetail: any) {
+        const { id } = deleteDetail;
 
-		trackers = trackers.filter((t) => t.id !== id);
-		// backup();
-	}
+        trackers = trackers.filter((t) => t.id !== id);
+        // backup();
+    }
 
-    function handleNewDuration({ id, duration }) {
-		const i = trackers.findIndex((t) => t.id === id);
-		if (i > -1) {
-			trackers[i].duration = duration;
-		}
-		// backup();
-	}
+    function handleTrackerNewDuration({ id, duration }) {
+        const i = trackers.findIndex((t) => t.id === id);
+        if (i > -1) {
+            trackers[i].duration = duration;
+        }
+        // backup();
+    }
 
-	function handleNameChanged({ name, id }) {
-		const i = trackers.findIndex((t) => t.id === id);
-		if (i > -1) {
-			trackers[i].name = name;
-		}
-		// backup();
-	}
-	//#endregion
+    function handleTrackerNameChanged({ name, id }) {
+        const i = trackers.findIndex((t) => t.id === id);
+        if (i > -1) {
+            trackers[i].name = name;
+        }
+        // backup();
+    }
 
-    function handleDragStart(event, sourceIndex: number) {
-		event.dataTransfer.effectAllowed = "move";
-		event.dataTransfer.dropEffect = "move";
-		event.dataTransfer.setData("trackerId", sourceIndex);
-	}
+    function handleTrackerDragStart(event, sourceIndex: number) {
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.dropEffect = "move";
+        event.dataTransfer.setData("trackerId", sourceIndex);
+    }
 
-	function handleDrop(event, targetIndex: number) {
-		event.dataTransfer.dropEffect = "move";
-		const sourceIndex = Number(event.dataTransfer.getData("trackerId"));
+    function handleTrackerDrop(event, targetIndex: number) {
+        event.dataTransfer.dropEffect = "move";
+        const sourceIndex = Number(event.dataTransfer.getData("trackerId"));
 
-		const newTrackers = trackers;
+        const newTrackers = trackers;
 
-		if (sourceIndex < targetIndex) {
-			newTrackers.splice(targetIndex + 1, 0, newTrackers[sourceIndex]);
-			newTrackers.splice(sourceIndex, 1);
-		} else {
-			newTrackers.splice(targetIndex, 0, newTrackers[sourceIndex]);
-			newTrackers.splice(sourceIndex + 1, 1);
-		}
-		trackers = newTrackers;
-	}
+        if (sourceIndex < targetIndex) {
+            newTrackers.splice(targetIndex + 1, 0, newTrackers[sourceIndex]);
+            newTrackers.splice(sourceIndex, 1);
+        } else {
+            newTrackers.splice(targetIndex, 0, newTrackers[sourceIndex]);
+            newTrackers.splice(sourceIndex + 1, 1);
+        }
+        trackers = newTrackers;
+    }
+    //#endregion
 </script>
 
 <!-- TRACKER LIST -->
-<ul>
-    {#each trackers as tracker, index (tracker.id)}
-        <div animate:flip={{ easing: backInOut, duration: 400 }}>
-            <Tracker
-                {...tracker}
-                draggable={true}
-                on:delete={(e) => handleDelete(e.detail)}
-                on:start={(e) => handleStartTracking(e.detail.id)}
-                on:newDuration={(e) => handleNewDuration(e.detail)}
-                on:nameChange={(e) => handleNameChanged(e.detail)}
-                on:dragstart={(e) =>
-                    handleDragStart(e.detail.event, index)}
-                on:drop={(e) => handleDrop(e.detail.event, index)}
-            />
+<li class="py-2" transition:fly={{ y: -100, duration: 400, easing: backInOut }}>
+    <div
+        class={`${
+            target > 0 ? "rounded-b-none" : ""
+        } flex-wrap px-4 py-2 bg-gray-50 dark:bg-gray-800 dark:text-gray-100 flex flex-row gap-4 shadow-md rounded justify-between items-center`}
+    >
+        <input
+            class={`input flex-grow overflow-hidden`}
+            type="text"
+            bind:value={inputValue}
+            on:change={() => dispatch("nameChange", { name: inputValue, id })}
+        />
+        <!-- BUTTONS -->
+        <div class="flex flex-row gap-1 justify-evenly w-full md:w-auto">
+            <button disabled class={`btn secondary-btn`} on:click={() => false}
+                ><Icon data={faUndo} /></button
+            >
+            <button
+                class={`btn secondary-btn`}
+                on:click={() => handleDeleteClick()}
+                ><Icon data={faTrash} /></button
+            >
         </div>
-    {/each}
-</ul>
+    </div>
+    <ul>
+        {#each trackers as tracker, index (tracker.id)}
+            <div animate:flip={{ easing: backInOut, duration: 400 }}>
+                <Tracker
+                    {...tracker}
+                    draggable={true}
+                    on:delete={(e) => handleTrackerDelete(e.detail)}
+                    on:start={(e) => handleTrackerStartTracking(e.detail.id)}
+                    on:newDuration={(e) => handleTrackerNewDuration(e.detail)}
+                    on:nameChange={(e) => handleTrackerNameChanged(e.detail)}
+                    on:dragstart={(e) =>
+                        handleTrackerDragStart(e.detail.event, index)}
+                    on:drop={(e) => handleTrackerDrop(e.detail.event, index)}
+                />
+            </div>
+        {/each}
+    </ul>
+</li>
 
 <style>
 </style>
