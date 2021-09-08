@@ -30,8 +30,12 @@
 
     export let draggable: boolean;
 
-    $: durationFormatted = formatDate(duration);
-    $: durationStyled = styleDate(durationFormatted);
+    $: sum = trackers.reduce((acc, tracker) => acc + tracker.duration, 0);
+    $: sumFormatted = new Date(sum * 1000).toISOString().substr(11, 8);
+    $: sumStyled = `<strong>${sumFormatted.substr(
+        0,
+        5
+    )}</strong>:${sumFormatted.substr(6, 2)}`;
 
     $: targetFormatted = formatDate(target);
     $: targetStyled = styleDate(targetFormatted);
@@ -178,7 +182,7 @@
                 <div class={`${active ? "spin" : ""} flex items-center`}>
                     <Icon data={faHourglass} />
                 </div>
-                {@html durationStyled}
+                {@html sumStyled}
             </div>
         </section>
 
