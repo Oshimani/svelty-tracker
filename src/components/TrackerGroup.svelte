@@ -110,7 +110,14 @@
 </script>
 
 <!-- TRACKER LIST -->
-<li class="py-2" transition:fly={{ y: -100, duration: 400, easing: backInOut }}>
+<li
+    {draggable}
+    on:dragstart={(event) => dispatch("dragstart", { event })}
+    on:dragover|preventDefault={() => false}
+    on:drop|preventDefault={(event) => dispatch("drop", { event })}
+    class="py-2"
+    transition:fly={{ y: -100, duration: 400, easing: backInOut }}
+>
     <div
         class={`${
             target > 0 ? "rounded-b-none" : ""

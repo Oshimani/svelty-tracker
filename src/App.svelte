@@ -128,6 +128,8 @@
 			newTrackers.splice(sourceIndex + 1, 1);
 		}
 		trackers = newTrackers;
+
+		backup();
 	}
 
 	onMount(() => {
@@ -187,6 +189,9 @@
 							draggable={true}
 							on:nameChange={(e) => handleNameChanged(e.detail)}
 							on:delete={(e) => handleDelete(e.detail)}
+							on:dragstart={(e) =>
+								handleDragStart(e.detail.event, index)}
+							on:drop={(e) => handleDrop(e.detail.event, index)}
 						/>
 					{:else}
 						<!-- TRACKER -->
