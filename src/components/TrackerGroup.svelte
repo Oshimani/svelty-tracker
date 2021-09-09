@@ -18,6 +18,7 @@
     import type { ITracker } from "../models/ITracker";
     import { hideTarget } from "../stores/settings-store";
 
+    import { formatDate, styleDate } from "../utils/date-fns";
     import Tracker from "./Tracker.svelte";
     import Form from "./Form.svelte";
 
@@ -33,11 +34,8 @@
     export let draggable: boolean;
 
     $: sum = trackers.reduce((acc, tracker) => acc + tracker.duration, 0);
-    $: sumFormatted = new Date(sum * 1000).toISOString().substr(11, 8);
-    $: sumStyled = `<strong>${sumFormatted.substr(
-        0,
-        5
-    )}</strong>:${sumFormatted.substr(6, 2)}`;
+    $: sumFormatted = formatDate(sum);
+    $: sumStyled = styleDate(sumFormatted);
 
     $: targetFormatted = formatDate(target);
     $: targetStyled = styleDate(targetFormatted);
@@ -45,35 +43,18 @@
         (duration / target) * 100 <= 100 ? (duration / target) * 100 : 100;
 
     let inputValue: string = "";
-    let showForm: boolean = false;
     let audio;
-
-    function formatDate(value: number) {
-        return new Date(value * 1000).toISOString().substr(11, 8);
-    }
-
-    function styleDate(value: string) {
-        return `<strong>${value.substr(0, 5)}</strong>:${value.substr(6, 2)}`;
-    }
 
     onMount(() => {
         inputValue = name;
     });
-
-    //#region TRACKER GROUP FUNCTIONS
-
-    function handleAddTrackerClick() {
-        showForm = true;
-    }
 
     function handleDeleteClick() {
         if (confirm(`Delete ${name}?`)) {
             dispatch("delete", { id });
         }
     }
-    //#endregion
 
-    //#region TRACKER FUNCTIONS
     function handleTrackerStartTracking(id: string) {
         // stop all
         dispatch("stopCounting", { id });
@@ -84,37 +65,14 @@
         }
         trackers = [...trackers];
     }
-
-    function handleTrackerDragStart(event, sourceIndex: number) {
-        event.dataTransfer.effectAllowed = "move";
-        event.dataTransfer.dropEffect = "move";
-        event.dataTransfer.setData("trackerId", sourceIndex);
-    }
-
-    function handleTrackerDrop(event, targetIndex: number) {
-        event.dataTransfer.dropEffect = "move";
-        const sourceIndex = Number(event.dataTransfer.getData("trackerId"));
-
-        const newTrackers = trackers;
-
-        if (sourceIndex < targetIndex) {
-            newTrackers.splice(targetIndex + 1, 0, newTrackers[sourceIndex]);
-            newTrackers.splice(sourceIndex, 1);
-        } else {
-            newTrackers.splice(targetIndex, 0, newTrackers[sourceIndex]);
-            newTrackers.splice(sourceIndex + 1, 1);
-        }
-        trackers = newTrackers;
-    }
-    //#endregion
 </script>
 
 <!-- TRACKER LIST -->
 <li
     {draggable}
-    on:dragstart={(event) => dispatch("dragstart", { event })}
+    on:dragstart={(event) => dispatch("dragstart",  event )}
     on:dragover|preventDefault={() => false}
-    on:drop|preventDefault={(event) => dispatch("drop", { event })}
+    on:drop|preventDefault={(event) => dispatch("drop",  event )}
     class="py-2"
     transition:fly={{ y: -100, duration: 400, easing: backInOut }}
 >
@@ -199,9 +157,20 @@
                             trackerId: e.detail.id,
                             groupId: id,
                         })}
-                    on:dragstart={(e) =>
-                        handleTrackerDragStart(e.detail.event, index)}
-                    on:drop={(e) => handleTrackerDrop(e.detail.event, index)}
+                    on:dragstart={(e) => {
+                        dispatch("trackerDragStart", {
+                            event: e,
+                            trackerId: tracker.id,
+                            groupId: id,
+                        });
+                    }}
+                    on:drop={(e) => {
+                        dispatch("trackerDrop", {
+                            event: e,
+                            trackerId: tracker.id,
+                            groupId: id,
+                        });
+                    }}
                 />
             </div>
         {/each}

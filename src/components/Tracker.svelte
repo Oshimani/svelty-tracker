@@ -17,6 +17,7 @@
     import { tick } from "../store";
     import AddTime from "./AddTime.svelte";
     import { hideTarget, playSound } from "../stores/settings-store";
+    import { formatDate, styleDate } from "../utils/date-fns";
 
     const dispatch = createEventDispatcher();
 
@@ -53,14 +54,6 @@
 
     onDestroy(() => unsubscribe());
 
-    function formatDate(value: number) {
-        return new Date(value * 1000).toISOString().substr(11, 8);
-    }
-
-    function styleDate(value: string) {
-        return `<strong>${value.substr(0, 5)}</strong>:${value.substr(6, 2)}`;
-    }
-
     function start() {
         dispatch("start", { id });
 
@@ -90,10 +83,6 @@
         dispatch("newDuration", { id, duration });
     }
 
-    function handleStartClick() {
-        start();
-    }
-
     function handleResetClick() {
         if (confirm(`Reset ${name}?`)) {
             reset();
@@ -109,21 +98,13 @@
     function handleNameChanged() {
         dispatch("nameChange", { name: inputValue, id });
     }
-
-    function handleDragStart(event) {
-        dispatch("dragstart", { event });
-    }
-
-    function handleDrop(event) {
-        dispatch("drop", { event });
-    }
 </script>
 
 <li
     {draggable}
-    on:dragstart={(e) => handleDragStart(e)}
-    on:dragover|preventDefault={() => false}
-    on:drop|preventDefault={(e) => handleDrop(e)}
+    on:dragstart|stopPropagation={(e) => dispatch("dragstart", e)}
+    on:dragover|preventDefault|stopPropagation={() => false}
+    on:drop|preventDefault|stopPropagation={(e) => dispatch("drop", e)}
     class="py-2"
     transition:fly={{ y: -100, duration: 400, easing: backInOut }}
 >
@@ -211,7 +192,7 @@
         <section class="flex flex-row gap-1 justify-evenly w-full md:w-auto">
             <button
                 disabled={active}
-                on:click={() => handleStartClick()}
+                on:click={() => start()}
                 class={`btn primary-btn`}
             >
                 <Icon data={faPlayCircle} /> Start

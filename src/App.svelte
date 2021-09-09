@@ -15,16 +15,15 @@
 	import Form from "./components/Form.svelte";
 	import Menu from "./components/Menu.svelte";
 	import TrackerGroup from "./components/TrackerGroup.svelte";
+	import { formatDate, styleDate } from "./utils/date-fns";
 	//#endregion
 
 	let trackerGroups: ITrackerGroup[] = [];
 
 	$: sum = trackerGroups.reduce((acc, tracker) => acc + tracker.duration, 0);
-	$: sumFormatted = new Date(sum * 1000).toISOString().substr(11, 8);
-	$: sumStyled = `<strong>${sumFormatted.substr(
-		0,
-		5
-	)}</strong>:${sumFormatted.substr(6, 2)}`;
+	$: sumFormatted = formatDate(sum);
+	$: sumStyled = styleDate(sumFormatted);
+
 	$: isAnyTrackerActive = trackerGroups.findIndex((t) => t.active) > -1;
 	$: activeIcon = isAnyTrackerActive ? "🔴" : "⏸️";
 
@@ -130,13 +129,13 @@
 	}
 	//#endregion
 
-	function handleDragStart(event, sourceIndex: number) {
+	function handleTrackerGroupDragStart(event, sourceIndex: number) {
 		event.dataTransfer.effectAllowed = "move";
 		event.dataTransfer.dropEffect = "move";
 		event.dataTransfer.setData("trackerId", sourceIndex);
 	}
 
-	function handleDrop(event, targetIndex: number) {
+	function handleTrackerGroupDrop(event, targetIndex: number) {
 		event.dataTransfer.dropEffect = "move";
 		const sourceIndex = Number(event.dataTransfer.getData("trackerId"));
 
@@ -150,6 +149,69 @@
 			newTrackers.splice(sourceIndex + 1, 1);
 		}
 		trackerGroups = newTrackers;
+
+		backup();
+	}
+
+	function handleTrackerDragStart(
+		event: any,
+		trackerId: string,
+		groupId: string
+	) {
+		event.dataTransfer.effectAllowed = "move";
+		event.dataTransfer.dropEffect = "move";
+		event.dataTransfer.setData("type", "tracker");
+		event.dataTransfer.setData("trackerId", trackerId);
+		event.dataTransfer.setData("groupId", groupId);
+	}
+
+	function handleTrackerDrop(
+		event: DragEvent,
+		targetTrackerId: string,
+		targetGroupId: string
+	) {
+		if (event.dataTransfer.getData("tracker") !== "tracker") return;
+		console.log("Tracker drop");
+
+		event.dataTransfer.dropEffect = "move";
+		const sourceTrackerId = event.dataTransfer.getData("trackerId");
+		const sourceGroupId = event.dataTransfer.getData("groupId");
+
+		const sourceGroupIndex = trackerGroups.findIndex(
+			(g) => g.id === sourceGroupId
+		);
+		const targetGroupIndex = trackerGroups.findIndex(
+			(g) => g.id === targetGroupId
+		);
+
+		const sourceTrackerIndex = trackerGroups[
+			sourceGroupIndex
+		].trackers.findIndex((g) => g.id === sourceTrackerId);
+		const targetTrackerIndex = trackerGroups[
+			targetGroupIndex
+		].trackers.findIndex((g) => g.id === targetTrackerId);
+
+		// swap in same Group
+		if (sourceGroupId === targetGroupId) {
+			const newTrackers = trackerGroups[sourceGroupIndex].trackers;
+
+			if (sourceTrackerIndex < targetTrackerIndex) {
+				newTrackers.splice(
+					targetTrackerIndex + 1,
+					0,
+					newTrackers[sourceTrackerIndex]
+				);
+				newTrackers.splice(sourceTrackerIndex, 1);
+			} else {
+				newTrackers.splice(
+					targetTrackerIndex,
+					0,
+					newTrackers[sourceTrackerIndex]
+				);
+				newTrackers.splice(sourceTrackerIndex + 1, 1);
+			}
+			trackerGroups[sourceGroupIndex].trackers = newTrackers;
+		}
 
 		backup();
 	}
@@ -214,11 +276,23 @@
 						on:trackerPropChange={(e) =>
 							handleTrackerPropChanged(e.detail)}
 						on:trackerDelete={(e) => handleTrackerDeleted(e.detail)}
+						on:trackerDragStart={(e) =>
+							handleTrackerDragStart(
+								e.detail.event.detail,
+								e.detail.trackerId,
+								e.detail.groupId
+							)}
+						on:trackerDrop={(e) =>
+							handleTrackerDrop(
+								e.detail.eventTTT.detail,
+								e.detail.trackerId,
+								e.detail.groupId
+							)}
 						on:stopCounting={(e) => stopTheCount(e.detail.id)}
 						on:delete={(e) => handleDeleteTrackerGroup(e.detail)}
 						on:dragstart={(e) =>
-							handleDragStart(e.detail.event, index)}
-						on:drop={(e) => handleDrop(e.detail.event, index)}
+							handleTrackerGroupDragStart(e.detail, index)}
+						on:drop={(e) => handleTrackerGroupDrop(e.detail, index)}
 					/>
 				</div>
 			{/each}
