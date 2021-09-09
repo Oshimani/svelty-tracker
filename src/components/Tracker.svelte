@@ -162,6 +162,7 @@
             </div>
         </section>
 
+        <!-- TIME DISPLAY -->
         <section class="flex flex-row gap-4 justify-evenly w-full md:w-auto">
             <!-- TARGET -->
             {#if !$hideTarget}
@@ -191,7 +192,7 @@
         </section>
 
         <!-- TIMER BUTTONS -->
-        <div
+        <section
             class="flex flex-row items-baseline gap-1 justify-evenly w-full md:w-auto"
         >
             <AddTime
@@ -204,10 +205,10 @@
                 on:timeChange={(e) => addTime(e.detail.value)}
                 manipulation="sub"
             />
-        </div>
+        </section>
 
         <!-- BUTTONS -->
-        <div class="flex flex-row gap-1 justify-evenly w-full md:w-auto">
+        <section class="flex flex-row gap-1 justify-evenly w-full md:w-auto">
             <button
                 disabled={active}
                 on:click={() => handleStartClick()}
@@ -225,7 +226,7 @@
                 on:click={() => handleDeleteClick()}
                 ><Icon data={faTrash} /></button
             >
-        </div>
+        </section>
     </div>
 
     <!-- PROGRESS BAR -->

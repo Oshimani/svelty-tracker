@@ -12,77 +12,91 @@
 
 	import { tick } from "./store";
 
-	import Tracker from "./components/Tracker.svelte";
 	import Form from "./components/Form.svelte";
 	import Menu from "./components/Menu.svelte";
 	import TrackerGroup from "./components/TrackerGroup.svelte";
 	//#endregion
 
-	let trackers: (ITracker | ITrackerGroup)[] = [];
+	let trackerGroups: ITrackerGroup[] = [];
 
-	$: sum = trackers.reduce((acc, tracker) => acc + tracker.duration, 0);
+	$: sum = trackerGroups.reduce((acc, tracker) => acc + tracker.duration, 0);
 	$: sumFormatted = new Date(sum * 1000).toISOString().substr(11, 8);
 	$: sumStyled = `<strong>${sumFormatted.substr(
 		0,
 		5
 	)}</strong>:${sumFormatted.substr(6, 2)}`;
-	$: isAnyTrackerActive = trackers.findIndex((t) => t.active) > -1;
+	$: isAnyTrackerActive = trackerGroups.findIndex((t) => t.active) > -1;
 	$: activeIcon = isAnyTrackerActive ? "🔴" : "⏸️";
 
 	//#region TRACKING
 	function stopTheCount(id?: string) {
-		trackers = [
-			...trackers.map((t) => {
-				if (t.id === id) {
-					return { ...t, active: true };
-				}
+		trackerGroups = [
+			...trackerGroups.map((g) => {
 				return {
-					...t,
-					active: false,
+					...g,
+					trackers: [
+						...g.trackers.map((t) => {
+							if (t.id === id) {
+								return { ...t, active: true };
+							}
+							return {
+								...t,
+								active: false,
+							};
+						}),
+					],
 				};
 			}),
 		];
+		backup();
 	}
 
-	function handleStartTracking(id: string) {
-		// stop all
-		stopTheCount();
-		// restart current
-		const i = trackers.findIndex((t) => t.id === id);
-		if (i > -1) {
-			trackers[i].active = true;
-		}
-		trackers = [...trackers];
-	}
-
-	function handleDelete(deleteDetail: any) {
+	function handleDeleteTrackerGroup(deleteDetail: ITrackerGroup) {
 		const { id } = deleteDetail;
-
-		trackers = trackers.filter((t) => t.id !== id);
+		trackerGroups = trackerGroups.filter((t) => t.id !== id);
 		backup();
 	}
 
-	function handleSubmit(newTracker: ITracker) {
-		trackers = [newTracker, ...trackers];
+	function handleSubmitTrackerGroup(newTrackerGroup: ITrackerGroup) {
+		trackerGroups = [newTrackerGroup as ITrackerGroup, ...trackerGroups];
 		backup();
 	}
 
-	function isIdFree(id: string): boolean {
-		return trackers.findIndex((t) => t.id === id) === -1;
-	}
-
-	function handleNewDuration({ id, duration }) {
-		const i = trackers.findIndex((t) => t.id === id);
+	function handleTrackerGroupNameChanged({ name, id }) {
+		const i = trackerGroups.findIndex((t) => t.id === id);
 		if (i > -1) {
-			trackers[i].duration = duration;
+			trackerGroups[i].name = name;
 		}
 		backup();
 	}
 
-	function handleNameChanged({ name, id }) {
-		const i = trackers.findIndex((t) => t.id === id);
+	function handleSubmitTracker(tracker: ITracker, id: string) {
+		const i = trackerGroups.findIndex((t) => t.id === id);
 		if (i > -1) {
-			trackers[i].name = name;
+			trackerGroups[i].trackers = [...trackerGroups[i].trackers, tracker];
+		}
+		backup();
+	}
+
+	function handleTrackerPropChanged({ key, value, trackerId, groupId }) {
+		const gi = trackerGroups.findIndex((g) => g.id === groupId);
+		if (gi > -1) {
+			const ti = trackerGroups[gi].trackers.findIndex(
+				(t) => t.id === trackerId
+			);
+			if (ti > -1) {
+				trackerGroups[gi].trackers[ti][key] = value;
+			}
+		}
+		backup();
+	}
+
+	function handleTrackerDeleted({ trackerId, groupId }) {
+		const gi = trackerGroups.findIndex((g) => g.id === groupId);
+		if (gi > -1) {
+			trackerGroups[gi].trackers = trackerGroups[gi].trackers.filter(
+				(t) => t.id !== trackerId
+			);
 		}
 		backup();
 	}
@@ -92,7 +106,10 @@
 	function backup() {
 		localStorage.setItem(
 			"backup",
-			JSON.stringify({ date: new Date().toISOString(), data: trackers })
+			JSON.stringify({
+				date: new Date().toISOString(),
+				data: trackerGroups,
+			})
 		);
 	}
 
@@ -100,9 +117,14 @@
 		const backup = JSON.parse(localStorage.getItem("backup"));
 		if (backup) {
 			console.log("Found backup", backup);
-			const parsedTrackers = backup.data;
-			trackers = parsedTrackers.map((t) => {
-				return { ...t, active: false };
+			const parsedTrackers: ITrackerGroup[] = backup.data;
+			trackerGroups = parsedTrackers.map((g) => {
+				return {
+					...g,
+					trackers: [
+						...g.trackers.map((t) => ({ ...t, active: false })),
+					],
+				};
 			});
 		}
 	}
@@ -118,7 +140,7 @@
 		event.dataTransfer.dropEffect = "move";
 		const sourceIndex = Number(event.dataTransfer.getData("trackerId"));
 
-		const newTrackers = trackers;
+		const newTrackers = trackerGroups;
 
 		if (sourceIndex < targetIndex) {
 			newTrackers.splice(targetIndex + 1, 0, newTrackers[sourceIndex]);
@@ -127,7 +149,7 @@
 			newTrackers.splice(targetIndex, 0, newTrackers[sourceIndex]);
 			newTrackers.splice(sourceIndex + 1, 1);
 		}
-		trackers = newTrackers;
+		trackerGroups = newTrackers;
 
 		backup();
 	}
@@ -155,7 +177,7 @@
 			class="items-baseline px-4 py-2 uppercase bg-blue-600 text-gray-50 rounded flex flex-row justify-between bg-gradient-to-r dark:from-purple-600 dark:via-red-500 dark:to-yellow-400"
 		>
 			<div class="hidden md:block">
-				Active trackings {trackers.length}
+				Active trackings {trackerGroups.length}
 			</div>
 
 			<span>
@@ -180,33 +202,24 @@
 	<section class="pt-16 pb-14">
 		<!-- TRACKER LIST -->
 		<ul>
-			{#each trackers as trackingUnit, index (trackingUnit.id)}
+			{#each trackerGroups as trackerGroup, index (trackerGroup.id)}
 				<div animate:flip={{ easing: backInOut, duration: 400 }}>
-					{#if trackingUnit.hasOwnProperty("trackers")}
-						<!-- TRACKER GROUP -->
-						<TrackerGroup
-							{...trackingUnit}
-							draggable={true}
-							on:nameChange={(e) => handleNameChanged(e.detail)}
-							on:delete={(e) => handleDelete(e.detail)}
-							on:dragstart={(e) =>
-								handleDragStart(e.detail.event, index)}
-							on:drop={(e) => handleDrop(e.detail.event, index)}
-						/>
-					{:else}
-						<!-- TRACKER -->
-						<Tracker
-							{...trackingUnit}
-							draggable={true}
-							on:delete={(e) => handleDelete(e.detail)}
-							on:start={(e) => handleStartTracking(e.detail.id)}
-							on:newDuration={(e) => handleNewDuration(e.detail)}
-							on:nameChange={(e) => handleNameChanged(e.detail)}
-							on:dragstart={(e) =>
-								handleDragStart(e.detail.event, index)}
-							on:drop={(e) => handleDrop(e.detail.event, index)}
-						/>
-					{/if}
+					<TrackerGroup
+						{...trackerGroup}
+						draggable={true}
+						on:addTracker={(e) =>
+							handleSubmitTracker(e.detail.tracker, e.detail.id)}
+						on:nameChange={(e) =>
+							handleTrackerGroupNameChanged(e.detail)}
+						on:trackerPropChange={(e) =>
+							handleTrackerPropChanged(e.detail)}
+						on:trackerDelete={(e) => handleTrackerDeleted(e.detail)}
+						on:stopCounting={(e) => stopTheCount(e.detail.id)}
+						on:delete={(e) => handleDeleteTrackerGroup(e.detail)}
+						on:dragstart={(e) =>
+							handleDragStart(e.detail.event, index)}
+						on:drop={(e) => handleDrop(e.detail.event, index)}
+					/>
 				</div>
 			{/each}
 		</ul>
@@ -215,8 +228,8 @@
 	<div class="fixed bottom-0 left-0 w-full px-8 py-4">
 		<!-- NEW FORM -->
 		<Form
-			submit={(newTracker) => handleSubmit(newTracker)}
-			checkID={(id) => isIdFree(id)}
+			type="group"
+			on:newTrackerGroup={(e) => handleSubmitTrackerGroup(e.detail.group)}
 		/>
 	</div>
 </main>

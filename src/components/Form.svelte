@@ -1,16 +1,20 @@
 <script lang="ts">
+    import { createEventDispatcher } from "svelte";
     import { fade, fly } from "svelte/transition";
     import { backInOut } from "svelte/easing";
     import { faPlus } from "@fortawesome/free-solid-svg-icons";
     import Icon from "svelte-awesome";
+
+    import { v4 as uuid } from "uuid";
 
     import type { ITracker } from "../models/ITracker";
 
     import NumberInput from "./NumberInput.svelte";
     import type { ITrackerGroup } from "../models/ITrackerGroup";
 
-    export let submit: (newTracker: ITracker) => void;
-    export let checkID: (id: string) => boolean;
+    const dispatch = createEventDispatcher();
+
+    export let type: "tracker" | "group";
 
     let submitButton;
     let showModal: boolean = false;
@@ -21,13 +25,7 @@
 
     $: target = targetHours + targetMinutes;
 
-    function saveName() {
-        if (!checkID(name)) {
-            // cancel here
-            alert(`Name: ${name} alsready in list, name has to be unique.`);
-            return;
-        }
-
+    function onSaveName() {
         showModal = true;
         // cheap hack
         setTimeout(() => {
@@ -36,26 +34,29 @@
     }
 
     function handleSubmitTracker() {
-        submit({
-            name,
-            id: name,
-            duration: 0,
-            target,
-            active: true,
-        } as ITracker);
-
+        dispatch("newTracker", {
+            tracker: {
+                name,
+                id: uuid(),
+                duration: 0,
+                target,
+                active: true,
+            } as ITracker,
+        });
         resetForm();
     }
 
     function handleSubmitGroup() {
-        submit({
-            name,
-            id: name,
-            duration: 0,
-            target,
-            active: true,
-            trackers: [],
-        } as ITrackerGroup);
+        dispatch("newTrackerGroup", {
+            group: {
+                name,
+                id: uuid(),
+                duration: 0,
+                target,
+                active: true,
+                trackers: [],
+            } as ITrackerGroup,
+        });
         resetForm();
     }
 
@@ -82,7 +83,7 @@
 
 <form
     class="bg-gray-300 dark:bg-gray-800 rounded-2xl px-4 py-2 shadow flex flex-row gap-1"
-    on:submit|preventDefault={() => saveName()}
+    on:submit|preventDefault={() => onSaveName()}
 >
     <input
         class="input flex-grow"
@@ -111,7 +112,7 @@
     >
         <header class="">
             <h1 class=" text-center px-12 pt-4">Set target duration</h1>
-            <p class="text-sm text-center text-gray-600">
+            <p class="text-sm text-center text-gray-500">
                 (leave at 0 for no target duration)
             </p>
             <div
@@ -146,15 +147,19 @@
                     }}
                     class={`btn secondary-btn`}>Cancel</button
                 >
-                <button
-                    bind:this={submitButton}
-                    on:click={() => handleSubmitTracker()}
-                    class={`btn secondary-btn`}>Create Tracker</button
-                >
-                <button
-                    on:click={() => handleSubmitGroup()}
-                    class={`btn secondary-btn`}>Create Group</button
-                >
+                {#if type === "tracker"}
+                    <button
+                        bind:this={submitButton}
+                        on:click={() => handleSubmitTracker()}
+                        class={`btn secondary-btn`}>Create Tracker</button
+                    >
+                {:else}
+                    <button
+                        bind:this={submitButton}
+                        on:click={() => handleSubmitGroup()}
+                        class={`btn secondary-btn`}>Create Group</button
+                    >
+                {/if}
             </div>
         </footer>
     </div>

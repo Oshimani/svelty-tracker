@@ -13,11 +13,13 @@
         faUndo,
         faTrash,
         faCrosshairs,
+        faPlus,
     } from "@fortawesome/free-solid-svg-icons";
     import type { ITracker } from "../models/ITracker";
     import { hideTarget } from "../stores/settings-store";
 
     import Tracker from "./Tracker.svelte";
+    import Form from "./Form.svelte";
 
     const dispatch = createEventDispatcher();
 
@@ -43,6 +45,8 @@
         (duration / target) * 100 <= 100 ? (duration / target) * 100 : 100;
 
     let inputValue: string = "";
+    let showForm: boolean = false;
+    let audio;
 
     function formatDate(value: number) {
         return new Date(value * 1000).toISOString().substr(11, 8);
@@ -57,20 +61,11 @@
     });
 
     //#region TRACKER GROUP FUNCTIONS
-    function stopTheCount(id?: string) {
-        trackers = [
-            ...trackers.map((t) => {
-                if (t.id === id) {
-                    return { ...t, active: true };
-                }
-                return {
-                    ...t,
-                    active: false,
-                };
-            }),
-        ];
-        // todo: stop other TGs count
+
+    function handleAddTrackerClick() {
+        showForm = true;
     }
+
     function handleDeleteClick() {
         if (confirm(`Delete ${name}?`)) {
             dispatch("delete", { id });
@@ -81,36 +76,13 @@
     //#region TRACKER FUNCTIONS
     function handleTrackerStartTracking(id: string) {
         // stop all
-        stopTheCount();
+        dispatch("stopCounting", { id });
         // restart current
         const i = trackers.findIndex((t) => t.id === id);
         if (i > -1) {
             trackers[i].active = true;
         }
         trackers = [...trackers];
-    }
-
-    function handleTrackerDelete(deleteDetail: any) {
-        const { id } = deleteDetail;
-
-        trackers = trackers.filter((t) => t.id !== id);
-        // backup();
-    }
-
-    function handleTrackerNewDuration({ id, duration }) {
-        const i = trackers.findIndex((t) => t.id === id);
-        if (i > -1) {
-            trackers[i].duration = duration;
-        }
-        // backup();
-    }
-
-    function handleTrackerNameChanged({ name, id }) {
-        const i = trackers.findIndex((t) => t.id === id);
-        if (i > -1) {
-            trackers[i].name = name;
-        }
-        // backup();
     }
 
     function handleTrackerDragStart(event, sourceIndex: number) {
@@ -158,6 +130,7 @@
             on:change={() => dispatch("nameChange", { name: inputValue, id })}
         />
 
+        <!-- TIME DISPLAY -->
         <section class="flex flex-row gap-4 justify-evenly w-full md:w-auto">
             <!-- TARGET -->
             {#if !$hideTarget}
@@ -186,8 +159,8 @@
             </div>
         </section>
 
-        <!-- BUTTONS -->
-        <div class="flex flex-row gap-1 justify-evenly w-full md:w-auto">
+        <!-- DELETE BUTTON -->
+        <section class="flex flex-row gap-1 justify-evenly w-full md:w-auto">
             <button disabled class={`btn secondary-btn`} on:click={() => false}
                 ><Icon data={faUndo} /></button
             >
@@ -196,18 +169,36 @@
                 on:click={() => handleDeleteClick()}
                 ><Icon data={faTrash} /></button
             >
-        </div>
+        </section>
     </div>
+
+    <!-- TRACKERS -->
     <ul>
         {#each trackers as tracker, index (tracker.id)}
             <div animate:flip={{ easing: backInOut, duration: 400 }}>
                 <Tracker
                     {...tracker}
                     draggable={true}
-                    on:delete={(e) => handleTrackerDelete(e.detail)}
+                    on:delete={(e) =>
+                        dispatch("trackerDelete", {
+                            trackerId: e.detail.id,
+                            groupId: id,
+                        })}
                     on:start={(e) => handleTrackerStartTracking(e.detail.id)}
-                    on:newDuration={(e) => handleTrackerNewDuration(e.detail)}
-                    on:nameChange={(e) => handleTrackerNameChanged(e.detail)}
+                    on:newDuration={(e) =>
+                        dispatch("trackerPropChange", {
+                            key: "duration",
+                            value: e.detail.duration,
+                            trackerId: e.detail.id,
+                            groupId: id,
+                        })}
+                    on:nameChange={(e) =>
+                        dispatch("trackerPropChange", {
+                            key: "name",
+                            value: e.detail.name,
+                            trackerId: e.detail.id,
+                            groupId: id,
+                        })}
                     on:dragstart={(e) =>
                         handleTrackerDragStart(e.detail.event, index)}
                     on:drop={(e) => handleTrackerDrop(e.detail.event, index)}
@@ -215,7 +206,51 @@
             </div>
         {/each}
     </ul>
+
+    <!-- NEW FORM -->
+    <Form
+        type="tracker"
+        on:newTracker={(e) =>
+            dispatch("addTracker", { tracker: e.detail.tracker, id })}
+    />
+
+    <!-- PROGRESS BAR -->
+    <div class="relative">
+        <div class="overflow-hidden h-1 w-full rounded-b">
+            <div
+                transition:scale
+                style={`width: ${precentUsed}%`}
+                class={`${
+                    target ? "" : "hidden"
+                } prog-bar h-1 bg-blue-600 bg-gradient-to-r dark:from-purple-600 dark:via-red-500 dark:to-yellow-400`}
+            />
+        </div>
+    </div>
+
+    <audio bind:this={audio} src="assets/audio/alert.mp3" />
 </li>
 
 <style>
+    .prog-bar {
+        -webkit-transition: width 1s linear;
+        -moz-transition: width 1s linear;
+        -o-transition: width 1s linear;
+        transition: width 1s linear;
+    }
+    .spin {
+        animation-name: spin;
+        animation-duration: 2000ms;
+        animation-iteration-count: infinite;
+    }
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        50% {
+            transform: rotate(180deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 </style>
