@@ -1,0 +1,5 @@
+[phases]
+setup = "nix-env -iA nixpkgs.python39"
+
+[environment]
+NODE_ENV = "production"
